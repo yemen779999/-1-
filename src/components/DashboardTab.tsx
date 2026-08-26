@@ -84,7 +84,7 @@ export default function DashboardTab({ db, onNavigateToTab, onSelectAccount, onO
               <div 
                 key={kpi.id} 
                 id={`kpi_card_${kpi.id}`}
-                className="group bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/80 rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.02)] hover:shadow-[0_12px_45px_rgba(0,0,0,0.05)] hover:border-slate-200/50 hover:scale-[1.01] transition-all duration-300 relative overflow-hidden cursor-pointer interactive-tap"
+                className="group card-3d rounded-2xl p-6 relative overflow-hidden cursor-pointer interactive-tap"
               >
                 <div className="flex justify-between items-start">
                   <div className="space-y-1.5 font-sans">
@@ -203,7 +203,7 @@ export default function DashboardTab({ db, onNavigateToTab, onSelectAccount, onO
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8" id="accounting_summaries_grid">
         
         {/* SUPPLIER SUMMARY CARD */}
-        <div className="group bg-white dark:bg-slate-900 border border-slate-100/80 dark:border-slate-800/80 rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.02)] hover:shadow-[0_12px_45px_rgba(0,0,0,0.04)] hover:scale-[1.005] transition-all duration-300 flex flex-col justify-between" id="suppliers_summary_card">
+        <div className="group card-3d rounded-2xl p-6 flex flex-col justify-between" id="suppliers_summary_card">
           <div className="space-y-6">
             <div className="flex justify-between items-center">
               <div className="flex items-center gap-2">
@@ -267,7 +267,7 @@ export default function DashboardTab({ db, onNavigateToTab, onSelectAccount, onO
         </div>
 
         {/* BUYER SUMMARY CARD */}
-        <div className="group bg-white dark:bg-slate-900 border border-slate-100/80 dark:border-slate-800/80 rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.02)] hover:shadow-[0_12px_45px_rgba(0,0,0,0.04)] hover:scale-[1.005] transition-all duration-300 flex flex-col justify-between" id="buyers_summary_card">
+        <div className="group card-3d rounded-2xl p-6 flex flex-col justify-between" id="buyers_summary_card">
           <div className="space-y-6">
             <div className="flex justify-between items-center">
               <div className="flex items-center gap-2">

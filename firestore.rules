@@ -15,9 +15,9 @@ service cloud.firestore {
     // Validation for UserDatabase
     function isValidUserDatabase(data) {
       return data.keys().hasAll(['dbState', 'lastUpdated', 'updatedBy']) &&
-             data.keys().size() == 3 &&
+             data.keys().size() <= 5 &&
              data.dbState is map &&
-             data.lastUpdated is string && data.lastUpdated.size() <= 50 &&
+             data.lastUpdated is string && data.lastUpdated.size() <= 100 &&
              data.updatedBy is string && data.updatedBy.size() <= 100;
     }
 
