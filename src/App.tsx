@@ -4,6 +4,7 @@
  */
 
 import React, { useState, useMemo, useEffect, useRef } from 'react';
+import CryptoJS from 'crypto-js';
 import { Database } from './utils';
 import DashboardTab from './components/DashboardTab';
 import AccountsTab from './components/AccountsTab';
@@ -82,7 +83,15 @@ export default function App() {
   const handleUnlock = (e: React.FormEvent) => {
     e.preventDefault();
     const savedPin = localStorage.getItem('smartacc_app_pin');
-    if (savedPin === pinInput) {
+    if (!savedPin) {
+      setIsAppLocked(false);
+      return;
+    }
+    const hashedInput = CryptoJS.SHA256(pinInput).toString();
+    if (savedPin === hashedInput || savedPin === pinInput) {
+      if (savedPin === pinInput) {
+        localStorage.setItem('smartacc_app_pin', hashedInput);
+      }
       setIsAppLocked(false);
     } else {
       setPinError(true);
