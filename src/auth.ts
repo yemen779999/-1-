@@ -41,8 +41,11 @@ export interface FirestoreErrorInfo {
 }
 
 export function handleFirestoreError(error: unknown, operationType: OperationType, path: string | null) {
+  const errMessage = error instanceof Error ? error.message : String(error);
+  const errLower = errMessage.toLowerCase();
+
   const errInfo: FirestoreErrorInfo = {
-    error: error instanceof Error ? error.message : String(error),
+    error: errMessage,
     authInfo: {
       userId: auth.currentUser?.uid,
       email: auth.currentUser?.email,
@@ -56,7 +59,14 @@ export function handleFirestoreError(error: unknown, operationType: OperationTyp
     },
     operationType,
     path
+  };
+
+  // If error is network or offline related, log warning without breaking execution
+  if (!navigator.onLine || errLower.includes('offline') || errLower.includes('network') || errLower.includes('unavailable') || errLower.includes('failed to get document')) {
+    console.warn('[Firestore Graceful Fallback]', JSON.stringify(errInfo));
+    return;
   }
+
   console.error('Firestore Error: ', JSON.stringify(errInfo));
   throw new Error(JSON.stringify(errInfo));
 }
