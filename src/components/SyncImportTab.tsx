@@ -130,12 +130,13 @@ export default function SyncImportTab({ db, onDatabaseUpdate, role: _role }: Syn
           });
           addLog("تم رفع البيانات المحلية وتأمينها بنجاح!");
         }
-      } catch (e: any) {
-        const errMsg = String(e?.message || e || "").toLowerCase();
+      } catch (e: unknown) {
+        const msg = e instanceof Error ? e.message : String(e);
+        const errMsg = msg.toLowerCase();
         if (errMsg.includes('offline') || errMsg.includes('network') || errMsg.includes('failed to get document') || errMsg.includes('unavailable') || !navigator.onLine) {
           addLog("تنبيه: أنت تعمل حالياً دون اتصال بالإنترنت. سيتم حفظ التغييرات محلياً.");
         } else {
-          addLog(`خطأ في تهيئة الارتباط: ${e.message || "صلاحيات غير كافية"}`);
+          addLog(`خطأ في تهيئة الارتباط: ${msg || "صلاحيات غير كافية"}`);
           handleFirestoreError(e, OperationType.GET, `user_databases/${user.uid}`);
         }
       }
@@ -212,14 +213,15 @@ export default function SyncImportTab({ db, onDatabaseUpdate, role: _role }: Syn
       localStorage.setItem("smartacc_last_cloud_sync_ts", updateTime);
       setSyncStatus("success");
       addLog("تمت مزامنة وإرسال التعديلات بنجاح إلى جميع الأجهزة المشتركة!");
-    } catch (e: any) {
-      const errMsg = String(e?.message || e || "").toLowerCase();
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : String(e);
+      const errMsg = msg.toLowerCase();
       if (errMsg.includes('offline') || errMsg.includes('network') || errMsg.includes('failed to get document') || errMsg.includes('unavailable') || !navigator.onLine) {
         setSyncStatus("success");
         addLog("تنبيه: تعذر إرسال التعديلات لعدم وجود اتصال نشط بالإنترنت. سيتم إرسالها بمجرد عودة الاتصال.");
       } else {
         setSyncStatus("error");
-        addLog(`خطأ أثناء رفع البيانات: ${e.message}`);
+        addLog(`خطأ أثناء رفع البيانات: ${msg}`);
         handleFirestoreError(e, OperationType.UPDATE, `user_databases/${user.uid}`);
       }
     }
@@ -327,8 +329,9 @@ export default function SyncImportTab({ db, onDatabaseUpdate, role: _role }: Syn
       XLSX.writeFile(wb, "نموذج_إدارة_نظام_أنس_المحاسبي.xlsx");
       setSuccessMessage("تم إنشاء وتحميل نموذج إكسل الإداري بنجاح! يمكنك استخدامه لإدخال البيانات محلياً وإعادة رفعه بضغطة زر.");
       addLog("تم إنشاء وتحميل نموذج إكسل الإداري بنجاح.");
-    } catch (err: any) {
-      setErrorMessage("فشل إنشاء ملف النموذج: " + err.message);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      setErrorMessage("فشل إنشاء ملف النموذج: " + msg);
     }
   };
 
