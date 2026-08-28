@@ -529,15 +529,14 @@ export default function AccountsTab({
     setImportFile(file);
 
     const reader = new FileReader();
-    reader.onload = async (evt) => {
+    reader.onload = (evt) => {
       try {
-        const { read, utils } = await import('xlsx');
         const bstr = evt.target?.result;
-        const wb = read(bstr, { type: 'binary' });
+        const wb = XLSX.read(bstr, { type: 'binary' });
         const wsname = wb.SheetNames[0];
         const ws = wb.Sheets[wsname];
         
-        const sheetObjects = utils.sheet_to_json(ws) as any[];
+        const sheetObjects = XLSX.utils.sheet_to_json(ws) as any[];
         
         const previewRows = sheetObjects.map((row: any) => {
           const getVal = (possibleKeys: string[], defaultVal = '') => {
