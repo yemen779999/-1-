@@ -5,7 +5,7 @@ import { Database } from '../utils';
 
 interface BackupCenterTabProps {
   db: Database;
-  authUser: any;
+  authUser: { uid: string; displayName?: string; email?: string } | null;
   onRestore: () => void;
 }
 
@@ -87,7 +87,7 @@ export const BackupCenterTab: React.FC<BackupCenterTabProps> = ({ db, authUser, 
 
   const handleRestore = async (driveId: string) => {
     if (!backupService) return;
-    const confirm = window.confirm('هل أنت متأكد من استعادة هذه النسخة؟ سيتم استبدال جميع البيانات الحالية.');
+    const confirm = globalThis.confirm('هل أنت متأكد من استعادة هذه النسخة؟ سيتم استبدال جميع البيانات الحالية.');
     if (!confirm) return;
 
     setLoading(true);
@@ -122,7 +122,7 @@ export const BackupCenterTab: React.FC<BackupCenterTabProps> = ({ db, authUser, 
 
   const handleDelete = async (driveId: string) => {
     if (!backupService) return;
-    const confirm = window.confirm('هل أنت متأكد من حذف هذه النسخة الاحتياطية نهائياً؟');
+    const confirm = globalThis.confirm('هل أنت متأكد من حذف هذه النسخة الاحتياطية نهائياً؟');
     if (!confirm) return;
 
     setLoading(true);
