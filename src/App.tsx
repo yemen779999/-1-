@@ -17,6 +17,7 @@ import InvoiceTab from './components/InvoiceTab';
 import RecycleBinTab from './components/RecycleBinTab';
 import ActivityLogTab from './components/ActivityLogTab';
 import { BackupCenterTab } from './components/BackupCenterTab';
+import { BackupService } from './backupService';
 import { UserRole } from './types';
 import { initAuth, auth, googleSignIn, logout, firestore, handleFirestoreError, OperationType } from './auth';
 import { doc, setDoc, onSnapshot, getDoc } from 'firebase/firestore';
@@ -320,8 +321,6 @@ export default function App() {
       if (needsBackup && navigator.onLine) {
         try {
           console.log('[Auto Backup] Starting scheduled cloud backup...');
-          // Use dynamic import so we don't break App.tsx loading
-          const { BackupService } = await import('./backupService');
           const backupService = new BackupService(authUser.uid);
           
           await backupService.uploadBackup(db.exportState(), 'Full');

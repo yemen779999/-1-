@@ -193,13 +193,13 @@ const getArabicDayName = (dateString: string): string => {
   }
 };
 
-const getFormattedMonthDay = (dateString: string): string => {
+const _getFormattedMonthDay = (dateString: string): string => {
   if (!dateString) return '';
   try {
     const date = new Date(dateString);
     if (isNaN(date.getTime())) return '';
     return `${date.getMonth() + 1}/${date.getDate()}`;
-  } catch (e) {
+  } catch (_e) {
     return '';
   }
 };
@@ -232,9 +232,9 @@ export default function AccountsTab({
   const [printThemeColor, setPrintThemeColor] = useState(db.printThemeColor || 'emerald');
 
   // Advanced search/filters state
-  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
-  const [selectedTypeFilter, setSelectedTypeFilter] = useState<'all' | 'buyer' | 'supplier'>('all');
-  const [selectedStatusFilter, setSelectedStatusFilter] = useState<'all' | 'active' | 'closed'>('all');
+  const [showAdvancedFilters, _setShowAdvancedFilters] = useState(false);
+  const [selectedTypeFilter, _setSelectedTypeFilter] = useState<'all' | 'buyer' | 'supplier'>('all');
+  const [selectedStatusFilter, _setSelectedStatusFilter] = useState<'all' | 'active' | 'closed'>('all');
   
   // Force activeType to 'buyer' if user is a Salesperson
   useEffect(() => {
@@ -279,7 +279,7 @@ export default function AccountsTab({
           txBalance: parsed.txBalance ?? true
         };
       }
-    } catch (e) {
+  } catch (_e) {
       // Ignored
     }
     return {
@@ -301,7 +301,9 @@ export default function AccountsTab({
     setVisibleColumns(updated);
     try {
       localStorage.setItem('smartacc_account_ledger_visible_cols', JSON.stringify(updated));
-    } catch (e) {}
+    } catch (_e) {
+      // Ignored
+    }
   };
 
   // Modals state
@@ -311,7 +313,7 @@ export default function AccountsTab({
 
   // Create Account Form Fields
   const [newName, setNewName] = useState('');
-  const [selectedCountry, setSelectedCountry] = useState<'SA' | 'YE'>('SA');
+  const [_selectedCountry, setSelectedCountry] = useState<'SA' | 'YE'>('SA');
   const [newPhone, setNewPhone] = useState('+967');
   const [newAddress, setNewAddress] = useState('');
   const [newOpeningBalance, setNewOpeningBalance] = useState<number>(0);
@@ -412,7 +414,7 @@ export default function AccountsTab({
   const [importType, setImportType] = useState<'excel' | 'pdf'>('excel');
   const [importFile, setImportFile] = useState<File | null>(null);
   const [pdfTextData, setPdfTextData] = useState('');
-  const [parsedPreviewRows, setParsedPreviewRows] = useState<any[]>([]);
+  const [parsedPreviewRows, setParsedPreviewRows] = useState<Array<{ date: string; description: string; amount: number; type: 'debit' | 'credit' }>>([]);
 
   const handleOpenEditTxModal = (tx: Transaction) => {
     if (isModificationRestricted) {
@@ -463,7 +465,7 @@ export default function AccountsTab({
   const parsePdfText = (text: string) => {
     setPdfTextData(text);
     const lines = text.split('\n');
-    const rows: any[] = [];
+    const rows: Array<{ date: string; description: string; amount: number; type: 'debit' | 'credit' }> = [];
 
     lines.forEach(line => {
       const trimmed = line.trim();
@@ -473,7 +475,7 @@ export default function AccountsTab({
       const dateMatch = trimmed.match(/(\d{4}[-/]\d{1,2}[-/]\d{1,2})|(\d{1,2}[-/]\d{1,2}[-/]\d{2,4})/);
       const date = dateMatch ? dateMatch[0] : new Date().toISOString().split('T')[0];
 
-      let content = trimmed.replace(date || '', '').trim();
+      const content = trimmed.replace(date || '', '').trim();
 
       // Look for credit / debit keywords
       let txType: 'debit' | 'credit' = 'debit';
@@ -523,23 +525,22 @@ export default function AccountsTab({
     setParsedPreviewRows(rows);
   };
 
-  const handleExcelUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleExcelUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     setImportFile(file);
 
     const reader = new FileReader();
-    reader.onload = async (evt) => {
+    reader.onload = (evt) => {
       try {
-        const { read, utils } = await import('xlsx');
         const bstr = evt.target?.result;
-        const wb = read(bstr, { type: 'binary' });
+        const wb = XLSX.read(bstr, { type: 'binary' });
         const wsname = wb.SheetNames[0];
         const ws = wb.Sheets[wsname];
         
-        const sheetObjects = utils.sheet_to_json(ws) as any[];
+        const sheetObjects = XLSX.utils.sheet_to_json(ws) as Record<string, unknown>[];
         
-        const previewRows = sheetObjects.map((row: any) => {
+        const previewRows = sheetObjects.map((row: Record<string, unknown>) => {
           const getVal = (possibleKeys: string[], defaultVal = '') => {
             for (const key of Object.keys(row)) {
               if (possibleKeys.some(k => key.toLowerCase().includes(k.toLowerCase()))) {
@@ -894,13 +895,13 @@ export default function AccountsTab({
   };
 
   const handlePrint = () => {
-    window.print();
+    globalThis.print();
   };
 
   const handleCompactPrint = () => {
     setIsCompactPrint(true);
     setTimeout(() => {
-      window.print();
+      globalThis.print();
       setIsCompactPrint(false);
     }, 100);
   };
@@ -934,7 +935,7 @@ export default function AccountsTab({
       'دائن (له)': statementTotals.creditTotal,
       'الرصيد التراكمي': statementRows[statementRows.length - 1].balanceAfter,
       'نوع القيد': ''
-    } as any);
+    } as unknown as { 'تاريخ الحركة': string; 'البيان والتفاصيل': string; 'الكمية': string; 'سعر الوحدة': string; 'إضافي/خصم': string; 'مدين (عليه)': number; 'دائن (له)': number; 'الرصيد التراكمي': number; 'نوع القيد': string });
 
     const ws = XLSX.utils.json_to_sheet(data);
     
@@ -1348,7 +1349,7 @@ export default function AccountsTab({
 
               <div className="flex justify-between items-start">
                 <div className="flex items-center gap-4">
-                  <QatLogo colorScheme={db.printThemeColor as any} customLogoUrl={db.printCompanyLogo} />
+                  <QatLogo colorScheme={db.printThemeColor as 'emerald' | 'indigo' | 'blue' | 'slate' | 'red' | 'amber' | 'teal'} customLogoUrl={db.printCompanyLogo} />
                   <div className="space-y-1">
                     <h1 className={`text-2xl font-black ${
                       db.printThemeColor === 'indigo' ? 'text-indigo-700' :
@@ -1752,15 +1753,10 @@ export default function AccountsTab({
                           if (!isNaN(dateObj.getTime())) {
                             dayName = dateObj.toLocaleDateString('ar-SA', { weekday: 'long' });
                           }
-                        } catch (e) {
+                        } catch (_e) {
                           dayName = '-';
                         }
                       }
-
-                      // Destructure price items or fallback
-                      const quantityVal = tx.quantity !== undefined && tx.quantity !== null ? tx.quantity : 1;
-                      const unitPriceVal = tx.unitPrice !== undefined && tx.unitPrice !== null ? tx.unitPrice : tx.amount;
-                      const extraChargesVal = tx.extraCharges !== undefined && tx.extraCharges !== null ? tx.extraCharges : 0;
 
                       return (
                         <tr key={tx.id} id={`tx_row_${tx.id}`} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors">
@@ -1959,7 +1955,7 @@ export default function AccountsTab({
 
               {/* Start System Print Dialog */}
               <button
-                onClick={() => window.print()}
+                onClick={() => globalThis.print()}
                 className="flex items-center justify-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold text-xs transition-colors shadow-md cursor-pointer"
               >
                 <Printer size={15} />
@@ -2004,7 +2000,7 @@ export default function AccountsTab({
                     </div>
 
                     <div className="flex flex-col items-center justify-center text-center w-1/3">
-                      <QatLogo colorScheme={printThemeColor as any} customLogoUrl={db.printCompanyLogo} />
+                      <QatLogo colorScheme={printThemeColor as 'emerald' | 'indigo' | 'blue' | 'slate' | 'red' | 'amber' | 'teal'} customLogoUrl={db.printCompanyLogo} />
                       <h1 className={`text-xl font-black ${themeColors[printThemeColor as keyof typeof themeColors]?.textDark || 'text-emerald-900'} mt-1.5`}>
                         {db.printCompanyName || 'نظام أنس المحاسبي المطور'}
                       </h1>
@@ -2124,7 +2120,7 @@ export default function AccountsTab({
                               if (!isNaN(dateObj.getTime())) {
                                 dayName = dateObj.toLocaleDateString('ar-SA', { weekday: 'long' });
                               }
-                            } catch (e) {
+                            } catch (_e) {
                               dayName = '-';
                             }
                           }

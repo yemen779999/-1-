@@ -20,8 +20,7 @@ import {
   Sparkles,
   SmartphoneIcon,
   LogOut,
-  LogIn,
-  Cloud
+  LogIn
 } from "lucide-react";
 import { Database } from "../utils";
 import { Account, Transaction, DailyLedgerEntry } from "../types";
@@ -36,7 +35,7 @@ interface SyncImportTabProps {
   role: string;
 }
 
-export default function SyncImportTab({ db, onDatabaseUpdate, role }: SyncImportTabProps) {
+export default function SyncImportTab({ db, onDatabaseUpdate, role: _role }: SyncImportTabProps) {
   // Auth & Cloud Sync States
   const [user, setUser] = useState<User | null>(null);
   const [syncEnabled, setSyncEnabled] = useState(false);
@@ -50,14 +49,14 @@ export default function SyncImportTab({ db, onDatabaseUpdate, role }: SyncImport
   });
 
   // Google Cloud backups state
-  const [googleBackupList, setGoogleBackupList] = useState<{ id: string; name: string; date: string; size: string; data?: any; driveFileId?: string }[]>(() => {
+  const [googleBackupList, setGoogleBackupList] = useState<{ id: string; name: string; date: string; size: string; data?: unknown; driveFileId?: string }[]>(() => {
     const saved = localStorage.getItem("smartacc_google_backups");
     return saved ? JSON.parse(saved) : [
       { id: "backup_g_1", name: "نسخة سحابية مرجعية تلقائية", date: "2026-06-16 12:45", size: "110 KB" }
     ];
   });
-  const [isDriveBackingUp, setIsDriveBackingUp] = useState(false);
-  const [googleBackupSuccess, setGoogleBackupSuccess] = useState(false);
+  const [_isDriveBackingUp, setIsDriveBackingUp] = useState(false);
+  const [_googleBackupSuccess, setGoogleBackupSuccess] = useState(false);
 
   // File Import States
   const [excelPreview, setExcelPreview] = useState<{
@@ -131,12 +130,13 @@ export default function SyncImportTab({ db, onDatabaseUpdate, role }: SyncImport
           });
           addLog("تم رفع البيانات المحلية وتأمينها بنجاح!");
         }
-      } catch (e: any) {
-        const errMsg = String(e?.message || e || "").toLowerCase();
+      } catch (e: unknown) {
+        const msg = e instanceof Error ? e.message : String(e);
+        const errMsg = msg.toLowerCase();
         if (errMsg.includes('offline') || errMsg.includes('network') || errMsg.includes('failed to get document') || errMsg.includes('unavailable') || !navigator.onLine) {
           addLog("تنبيه: أنت تعمل حالياً دون اتصال بالإنترنت. سيتم حفظ التغييرات محلياً.");
         } else {
-          addLog(`خطأ في تهيئة الارتباط: ${e.message || "صلاحيات غير كافية"}`);
+          addLog(`خطأ في تهيئة الارتباط: ${msg || "صلاحيات غير كافية"}`);
           handleFirestoreError(e, OperationType.GET, `user_databases/${user.uid}`);
         }
       }
@@ -213,14 +213,15 @@ export default function SyncImportTab({ db, onDatabaseUpdate, role }: SyncImport
       localStorage.setItem("smartacc_last_cloud_sync_ts", updateTime);
       setSyncStatus("success");
       addLog("تمت مزامنة وإرسال التعديلات بنجاح إلى جميع الأجهزة المشتركة!");
-    } catch (e: any) {
-      const errMsg = String(e?.message || e || "").toLowerCase();
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : String(e);
+      const errMsg = msg.toLowerCase();
       if (errMsg.includes('offline') || errMsg.includes('network') || errMsg.includes('failed to get document') || errMsg.includes('unavailable') || !navigator.onLine) {
         setSyncStatus("success");
         addLog("تنبيه: تعذر إرسال التعديلات لعدم وجود اتصال نشط بالإنترنت. سيتم إرسالها بمجرد عودة الاتصال.");
       } else {
         setSyncStatus("error");
-        addLog(`خطأ أثناء رفع البيانات: ${e.message}`);
+        addLog(`خطأ أثناء رفع البيانات: ${msg}`);
         handleFirestoreError(e, OperationType.UPDATE, `user_databases/${user.uid}`);
       }
     }
@@ -328,12 +329,13 @@ export default function SyncImportTab({ db, onDatabaseUpdate, role }: SyncImport
       XLSX.writeFile(wb, "نموذج_إدارة_نظام_أنس_المحاسبي.xlsx");
       setSuccessMessage("تم إنشاء وتحميل نموذج إكسل الإداري بنجاح! يمكنك استخدامه لإدخال البيانات محلياً وإعادة رفعه بضغطة زر.");
       addLog("تم إنشاء وتحميل نموذج إكسل الإداري بنجاح.");
-    } catch (err: any) {
-      setErrorMessage("فشل إنشاء ملف النموذج: " + err.message);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      setErrorMessage("فشل إنشاء ملف النموذج: " + msg);
     }
   };
 
-  const updateExcelEntry = (index: number, field: keyof DailyLedgerEntry, value: any) => {
+  const updateExcelEntry = (index: number, field: keyof DailyLedgerEntry, value: string | number) => {
     if (!excelPreview) return;
     const updatedEntries = [...excelPreview.entries];
     const entry = { ...updatedEntries[index], [field]: value };
@@ -353,62 +355,64 @@ export default function SyncImportTab({ db, onDatabaseUpdate, role }: SyncImport
     setExcelPreview(null);
     
     const reader = new FileReader();
-    reader.onload = async (e) => {
+    reader.onload = (e) => {
       try {
         const data = e.target?.result;
         const workbook = XLSX.read(data, { type: "binary" });
         const sheetName = workbook.SheetNames[0];
         const sheet = workbook.Sheets[sheetName];
         
-        const sheetObjects = XLSX.utils.sheet_to_json(sheet) as any[];
+        const sheetObjects = XLSX.utils.sheet_to_json(sheet) as Record<string, unknown>[];
 
         if (sheetObjects.length === 0) {
           throw new Error("ملف Excel فارغ.");
         }
 
-        const previewData = sheetObjects.map((row: any) => {
-           const getVal = (possibleKeys: string[], defaultVal = '') => {
+        const previewData = sheetObjects.map((row: Record<string, unknown>) => {
+          const getVal = (possibleKeys: string[], defaultVal = '') => {
             for (const key of Object.keys(row)) {
               if (possibleKeys.some(k => key.toLowerCase().includes(k.toLowerCase()))) {
-                return row[key];
+                return String(row[key] ?? defaultVal);
               }
             }
             return defaultVal;
           };
 
-          // Simple heuristic to differentiate between Account and Ledger Entry
-          const isAccount = getVal(['اسم الحساب', 'account', 'اسم'], '').length > 0;
+          const accName = getVal(['اسم الحساب', 'account', 'اسم'], '');
+          const isAccount = accName.length > 0;
           
           if (isAccount) {
             return {
-              type: 'account',
-              data: {
-                name: getVal(['اسم الحساب', 'account', 'اسم'], 'حساب مستورد'),
-                type: getVal(['نوع الحساب', 'type'], 'مدين')
-              }
+              type: 'account' as const,
+              account: {
+                name: accName,
+                type: (getVal(['نوع الحساب', 'type'], 'buyer') as Account['type'])
+              },
+              entry: null
             };
           } else {
              return {
-               type: 'entry',
-               data: {
+               type: 'entry' as const,
+               account: null,
+               entry: {
                  date: getVal(['تاريخ', 'date'], new Date().toISOString().split('T')[0]),
                  description: getVal(['بيان', 'وصف', 'تفاصيل', 'desc', 'detail'], 'قيد مستورد'),
-                 quantity: parseFloat(String(getVal(['الكميه', 'العدد', 'quantity', 'qty'], '0')).replace(/,/g, '')) || 0,
-                 unitPrice: parseFloat(String(getVal(['السعر', 'سعر', 'unitPrice'], '0')).replace(/,/g, '')) || 0,
-                 extraCharges: parseFloat(String(getVal(['الزيادات', 'إضافيات', 'extra', 'additions'], '0')).replace(/,/g, '')) || 0,
-                 total: parseFloat(String(getVal(['الاجمالي', 'إجمالي', 'total', 'amount'], '0')).replace(/,/g, '')) || 0,
-                 dayNumber: parseInt(String(getVal(['اليوم', 'day'], '1'))) || 1
+                 quantity: parseFloat(getVal(['الكميه', 'العدد', 'quantity', 'qty'], '0').replace(/,/g, '')) || 0,
+                 unitPrice: parseFloat(getVal(['السعر', 'سعر', 'unitPrice'], '0').replace(/,/g, '')) || 0,
+                 extraCharges: parseFloat(getVal(['الزيادات', 'إضافيات', 'extra', 'additions'], '0').replace(/,/g, '')) || 0,
+                 total: parseFloat(getVal(['الاجمالي', 'إجمالي', 'total', 'amount'], '0').replace(/,/g, '')) || 0,
+                 dayNumber: parseInt(getVal(['اليوم', 'day'], '1')) || 1
                }
              };
           }
         });
 
-        const accounts = previewData.filter(item => item.type === 'account').map(item => item.data);
-        const entries = previewData.filter(item => item.type === 'entry').map(item => item.data);
+        const accounts: Partial<Account>[] = previewData.filter(item => item.type === 'account' && item.account).map(item => item.account!);
+        const entries: Partial<DailyLedgerEntry>[] = previewData.filter(item => item.type === 'entry' && item.entry).map(item => item.entry!);
 
         setExcelPreview({
-          accounts: accounts,
-          entries: entries
+          accounts,
+          entries
         });
         setActiveImportType("excel");
         addLog("تمت قراءة وتحليل بيانات Excel بنجاح.");
@@ -430,7 +434,7 @@ export default function SyncImportTab({ db, onDatabaseUpdate, role }: SyncImport
   };
 
   // --- IMAGE & PDF AI PARSING WITH SERVER PROXY ---
-  const handleAIFiles = async (file: File) => {
+  const handleAIFiles = (file: File) => {
     setImportLoading(true);
     setErrorMessage(null);
     setAiPreview(null);
@@ -669,7 +673,7 @@ export default function SyncImportTab({ db, onDatabaseUpdate, role }: SyncImport
   };
 
   // Google Cloud - Create Firestore database backup snapshot
-  const createGoogleCloudBackup = async () => {
+  const _createGoogleCloudBackup = async () => {
     if (!user) {
       setErrorMessage("يرجى ربط محفظة السحاب بـ Google أولاً لتوليد نسخة احتياطية سحابية.");
       return;
@@ -680,7 +684,7 @@ export default function SyncImportTab({ db, onDatabaseUpdate, role }: SyncImport
 
     try {
       const backupId = `bk_${Date.now()}`;
-      const newBackupItem: any = {
+      const newBackupItem: { id: string; name: string; date: string; size: string; data: unknown; driveFileId?: string } = {
         id: backupId,
         name: `نسخة سحابية يدوية (${new Date().toLocaleDateString("ar-SA")})`,
         date: new Date().toLocaleString("ar-SA", { 
@@ -754,20 +758,21 @@ export default function SyncImportTab({ db, onDatabaseUpdate, role }: SyncImport
       setTimeout(() => setGoogleBackupSuccess(false), 4400);
       setSuccessMessage("تم تصدير ورفع النسخة السحابية لـ Google بنجاح وبسرعة أمان فائقة!");
 
-    } catch (e: any) {
+    } catch (e: unknown) {
       console.error(e);
-      addLog(`فشل تصدير النسخة للغيمة: ${e.message}`);
-      setErrorMessage(`تعذر نقل النسخة الاحتياطية لـ Google: ${e.message}`);
+      const msg = e instanceof Error ? e.message : String(e);
+      addLog(`فشل تصدير النسخة للغيمة: ${msg}`);
+      setErrorMessage(`تعذر نقل النسخة الاحتياطية لـ Google: ${msg}`);
     } finally {
       setIsDriveBackingUp(false);
     }
   };
 
   // Google Cloud - Restore Firestore backup snapshot to local system
-  const restoreGoogleCloudBackup = async (backupItem: any) => {
+  const _restoreGoogleCloudBackup = (backupItem: { name: string; date: string; data?: { accounts?: Account[]; transactions?: Transaction[]; dailyEntries?: DailyLedgerEntry[]; primaryCurrency?: string; exchangeRates?: Record<string, number> } }) => {
     if (!backupItem) return;
 
-    const confirmRestore = window.confirm(
+    const confirmRestore = globalThis.confirm(
       `تنبيه حرج للسلامة:\nهل أنت واثق تماماً من رغبتك في استعادة كشوفات الحساب والقيود للنسخة الاحتياطية المؤرخة في [${backupItem.date}]؟\nأي بيانات معدلة لم تحفظ سحابياً مسبقاً ستفقد تماماً.`
     );
 
@@ -796,15 +801,16 @@ export default function SyncImportTab({ db, onDatabaseUpdate, role }: SyncImport
         addLog("تنبيه: النسخة المستهدفة هي علامة مرجعية فارغة، تم الاحتفاظ بالبيانات الحالية لسلامتها.");
         setSuccessMessage("تمت استعادة السلامة المرجعية بنجاح (بيانات فارغة آمنة).");
       }
-    } catch (e: any) {
+    } catch (e: unknown) {
       console.error(e);
-      setErrorMessage(`حدث خطأ غير متوقع أثناء تفريغ الحزمة: ${e.message}`);
+      const msg = e instanceof Error ? e.message : String(e);
+      setErrorMessage(`حدث خطأ غير متوقع أثناء تفريغ الحزمة: ${msg}`);
     }
   };
 
   // Google Cloud - Delete backup from list
-  const deleteGoogleCloudBackup = async (id: string) => {
-    const confirmDelete = window.confirm("هل ترغب في مسح هذه النسخة الاحتياطية نهائياً من السيرفرات السحابية؟");
+  const _deleteGoogleCloudBackup = async (id: string) => {
+    const confirmDelete = globalThis.confirm("هل ترغب في مسح هذه النسخة الاحتياطية نهائياً من السيرفرات السحابية؟");
     if (!confirmDelete) return;
 
     try {
@@ -834,9 +840,10 @@ export default function SyncImportTab({ db, onDatabaseUpdate, role }: SyncImport
       }
 
       addLog("تم مسح النسخة الاحتياطية بنجاح من قاعدة البيانات والسحابة.");
-    } catch (e: any) {
+    } catch (e: unknown) {
       console.error(e);
-      setErrorMessage(`تعذر مسح النسخة الاحتياطية: ${e.message}`);
+      const msg = e instanceof Error ? e.message : String(e);
+      setErrorMessage(`تعذر مسح النسخة الاحتياطية: ${msg}`);
     }
   };
 

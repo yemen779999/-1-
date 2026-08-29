@@ -462,7 +462,11 @@ export class Database {
     if (!state) return;
     
     // Helper to merge arrays and move replaced items to deleted
-    const mergeEntities = (current: any[], incoming: any[], deletedStorage: any[]) => {
+    const mergeEntities = <T extends { id: string; updatedAt?: string }>(
+      current: T[],
+      incoming: T[],
+      deletedStorage: Array<{ id: string; timestamp?: number | string }>
+    ): T[] => {
       const merged = [...current];
       
       for (const incomingItem of incoming) {
@@ -832,7 +836,7 @@ export class Database {
     // RELATIONAL SYNC: If user linked an account (accountId is set), 
     // automatically and immediately generate a transaction in that account's ledger!
     if (newEntry.accountId) {
-      const linkedAcc = this.accounts.find(a => a.id === newEntry.accountId);
+      const _linkedAcc = this.accounts.find(a => a.id === newEntry.accountId);
       this.addTransaction({
         accountId: newEntry.accountId,
         date: newEntry.date,
