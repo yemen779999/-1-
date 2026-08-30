@@ -70,8 +70,7 @@ export function handleFirestoreError(error: unknown, operationType: OperationTyp
     return;
   }
 
-  console.error('Firestore Error: ', JSON.stringify(errInfo));
-  throw new Error(JSON.stringify(errInfo));
+  console.warn('[Firestore Error Graceful Handling]', JSON.stringify(errInfo));
 }
 
 const provider = new GoogleAuthProvider();

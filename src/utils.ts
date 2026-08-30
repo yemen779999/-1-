@@ -300,6 +300,7 @@ const INITIAL_DAILY_ENTRIES: DailyLedgerEntry[] = [
 // Helper to load data from localStorage or fallback
 export function loadFromStorage<T>(key: string, defaultValue: T): T {
   try {
+    if (typeof localStorage === 'undefined') return defaultValue;
     const item = localStorage.getItem(key);
     return item ? JSON.parse(item) : defaultValue;
   } catch (e) {
@@ -310,7 +311,9 @@ export function loadFromStorage<T>(key: string, defaultValue: T): T {
 
 export function saveToStorage<T>(key: string, data: T): void {
   try {
-    localStorage.setItem(key, JSON.stringify(data));
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem(key, JSON.stringify(data));
+    }
   } catch (e) {
     console.error(`Error saving key ${key} to storage:`, e);
   }
