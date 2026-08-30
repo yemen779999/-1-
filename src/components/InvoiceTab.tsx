@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useRef } from 'react';
 import * as XLSX from 'xlsx';
-import { Database } from '../utils';
-import { UserRole } from '../types';
+import { Database } from '../utils.ts';
+import { UserRole } from '../types.ts';
 import { 
   Printer, 
   Plus, 
@@ -445,7 +445,7 @@ export default function InvoiceTab({ db, onDatabaseUpdate, role }: InvoiceTabPro
   };
 
   const handlePrint = () => {
-    window.print();
+    globalThis.print();
   };
 
   const handleExportExcel = () => {
@@ -525,7 +525,7 @@ export default function InvoiceTab({ db, onDatabaseUpdate, role }: InvoiceTabPro
       {/* Sub-Tabs Selector - No Print */}
       <div className={`flex items-center justify-between bg-white dark:bg-slate-900 p-2.5 rounded-2xl border border-slate-100 dark:border-slate-800/80 shadow-xs print:hidden`}>
         <div className="flex gap-2">
-          <button
+          <button type="button"
             onClick={() => setActiveSubTab('create')}
             className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-black transition-all duration-200 cursor-pointer ${
               activeSubTab === 'create'
@@ -536,7 +536,7 @@ export default function InvoiceTab({ db, onDatabaseUpdate, role }: InvoiceTabPro
             <Plus size={15} />
             إنشاء فاتورة جديدة
           </button>
-          <button
+          <button type="button"
             onClick={() => setActiveSubTab('archive')}
             className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-black transition-all duration-200 cursor-pointer ${
               activeSubTab === 'archive'
@@ -573,34 +573,34 @@ export default function InvoiceTab({ db, onDatabaseUpdate, role }: InvoiceTabPro
                 <p className="text-sm text-slate-500 mt-1">تعبئة البيانات، ربط الحسابات المبيعات أو المشتريات، وإرفاق المستندات المصورة</p>
               </div>
               <div className="flex flex-wrap gap-2.5 w-full md:w-auto">
-                <button
+                <button type="button"
                   onClick={() => setShowPrintSettings(!showPrintSettings)}
                   className="flex items-center justify-center gap-2 px-4 py-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl font-bold text-xs transition-colors cursor-pointer"
                 >
                   <Settings size={15} />
                   إعدادات الترويسة
                 </button>
-                <button
+                <button type="button"
                   onClick={handleSaveInvoice}
                   className="flex items-center justify-center gap-2 px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-xs transition-colors shadow-md cursor-pointer"
                 >
                   حفظ وتوثيق الفاتورة
                 </button>
-                <button
+                <button type="button"
                   onClick={() => setShowPrintPreview(true)}
                   className="flex items-center justify-center gap-2 px-4 py-2.5 bg-amber-500 hover:bg-amber-600 text-white rounded-xl font-bold text-xs transition-colors shadow-md cursor-pointer"
                 >
                   <Eye size={15} />
                   معاينة الطباعة
                 </button>
-                <button
+                <button type="button"
                   onClick={handlePrint}
                   className="flex items-center justify-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold text-xs transition-colors shadow-md cursor-pointer"
                 >
                   <Printer size={15} />
                   طباعة مباشرة
                 </button>
-                <button
+                <button type="button"
                   onClick={handleExportExcel}
                   className="flex items-center justify-center gap-2 px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-xs transition-colors shadow-md cursor-pointer"
                 >
@@ -687,7 +687,7 @@ export default function InvoiceTab({ db, onDatabaseUpdate, role }: InvoiceTabPro
                   </div>
                 </div>
                 <div className="flex justify-end pt-2">
-                  <button
+                  <button type="button"
                     onClick={savePrintSettings}
                     className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-bold text-xs transition-colors cursor-pointer"
                   >
@@ -839,7 +839,7 @@ export default function InvoiceTab({ db, onDatabaseUpdate, role }: InvoiceTabPro
                         <button
                           type="button"
                           onClick={() => {
-                            const newWindow = window.open();
+                            const newWindow = globalThis.open();
                             if (newWindow) {
                               newWindow.document.write(`<img src="${attachmentData}" style="max-width:100%; height:auto;" />`);
                             }
@@ -989,7 +989,7 @@ export default function InvoiceTab({ db, onDatabaseUpdate, role }: InvoiceTabPro
                   </tbody>
                 </table>
                 <div className="p-4 bg-slate-50 dark:bg-slate-800/30 flex flex-col sm:flex-row gap-4 justify-between items-center border-t border-slate-150/40 dark:border-slate-800">
-                  <button
+                  <button type="button"
                     onClick={handleAddItem}
                     className="flex items-center gap-2 px-4 py-2 text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/40 dark:hover:bg-indigo-900/40 rounded-xl text-xs font-black transition-colors cursor-pointer"
                   >
@@ -1195,19 +1195,19 @@ export default function InvoiceTab({ db, onDatabaseUpdate, role }: InvoiceTabPro
             
             <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
               <div className="bg-slate-100 dark:bg-slate-800 p-1 rounded-xl flex gap-1 text-[11px] font-black">
-                <button
+                <button type="button"
                   onClick={() => setArchiveFilterType('all')}
                   className={`px-3 py-1.5 rounded-lg cursor-pointer ${archiveFilterType === 'all' ? 'bg-white dark:bg-slate-700 text-slate-800 dark:text-white shadow-xs' : 'text-slate-500'}`}
                 >
                   الكل
                 </button>
-                <button
+                <button type="button"
                   onClick={() => setArchiveFilterType('sale')}
                   className={`px-3 py-1.5 rounded-lg text-emerald-600 dark:text-emerald-400 cursor-pointer ${archiveFilterType === 'sale' ? 'bg-white dark:bg-slate-700 shadow-xs' : 'text-slate-500'}`}
                 >
                   مبيعات
                 </button>
-                <button
+                <button type="button"
                   onClick={() => setArchiveFilterType('purchase')}
                   className={`px-3 py-1.5 rounded-lg text-rose-600 dark:text-rose-400 cursor-pointer ${archiveFilterType === 'purchase' ? 'bg-white dark:bg-slate-700 shadow-xs' : 'text-slate-500'}`}
                 >
@@ -1314,7 +1314,7 @@ export default function InvoiceTab({ db, onDatabaseUpdate, role }: InvoiceTabPro
                         
                         {/* Actions */}
                         <td className="p-3 text-center whitespace-nowrap space-x-1.5">
-                          <button
+                          <button type="button"
                             onClick={() => handleOpenPreview(inv)}
                             className="p-1.5 text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300 hover:bg-indigo-50 dark:hover:bg-indigo-950/30 rounded-lg transition-all cursor-pointer inline-flex items-center justify-center"
                             title="معاينة وطباعة"
@@ -1323,7 +1323,7 @@ export default function InvoiceTab({ db, onDatabaseUpdate, role }: InvoiceTabPro
                           </button>
                           
                           {role !== 'Salesperson' && (
-                            <button
+                            <button type="button"
                               onClick={() => handleDeleteInvoice(inv.id)}
                               className="p-1.5 text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-lg transition-all cursor-pointer inline-flex items-center justify-center"
                               title="حذف الفاتورة"
@@ -1355,7 +1355,7 @@ export default function InvoiceTab({ db, onDatabaseUpdate, role }: InvoiceTabPro
                   تفاصيل الفاتورة الرسمية: <span className="font-mono text-indigo-600 dark:text-indigo-400">{selectedPreviewInvoice.invoiceNumber}</span>
                 </h3>
               </div>
-              <button 
+              <button type="button"
                 onClick={() => setSelectedPreviewInvoice(null)}
                 className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
               >
@@ -1491,7 +1491,7 @@ export default function InvoiceTab({ db, onDatabaseUpdate, role }: InvoiceTabPro
             {/* Modal Footer */}
             <div className="px-6 py-4 bg-slate-50 dark:bg-slate-800/40 border-t border-slate-100 dark:border-slate-800 flex justify-between gap-3">
               <div className="flex gap-2">
-                <button
+                <button type="button"
                   onClick={() => {
                     // Set all active states for print
                     setInvoiceNumber(selectedPreviewInvoice.invoiceNumber);
@@ -1515,7 +1515,7 @@ export default function InvoiceTab({ db, onDatabaseUpdate, role }: InvoiceTabPro
                   معاينة الطباعة
                 </button>
 
-                <button
+                <button type="button"
                   onClick={() => {
                     // Print logic for archival view:
                     // Temporarily load this invoice info as active to print
@@ -1533,7 +1533,7 @@ export default function InvoiceTab({ db, onDatabaseUpdate, role }: InvoiceTabPro
                     setActiveSubTab('create');
                     setSelectedPreviewInvoice(null);
                     setTimeout(() => {
-                      window.print();
+                      globalThis.print();
                     }, 400);
                   }}
                   className="flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold text-xs transition-colors cursor-pointer shadow-md"
@@ -1543,7 +1543,7 @@ export default function InvoiceTab({ db, onDatabaseUpdate, role }: InvoiceTabPro
                 </button>
               </div>
               
-              <button
+              <button type="button"
                 onClick={() => setSelectedPreviewInvoice(null)}
                 className="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl font-bold text-xs transition-colors cursor-pointer"
               >
@@ -1599,15 +1599,15 @@ export default function InvoiceTab({ db, onDatabaseUpdate, role }: InvoiceTabPro
               </div>
 
               {/* Start System Print Dialog */}
-              <button
-                onClick={() => window.print()}
+              <button type="button"
+                onClick={() => globalThis.print()}
                 className="flex items-center justify-center gap-2 px-4.5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold text-xs transition-colors shadow-md cursor-pointer"
               >
                 <Printer size={15} />
                 بدء الطباعة الآن
               </button>
 
-              <button
+              <button type="button"
                 onClick={handleExportExcel}
                 className="flex items-center justify-center gap-2 px-4.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-xs transition-colors shadow-md cursor-pointer"
               >
@@ -1616,7 +1616,7 @@ export default function InvoiceTab({ db, onDatabaseUpdate, role }: InvoiceTabPro
               </button>
 
               {/* Close Modal Preview */}
-              <button
+              <button type="button"
                 onClick={() => setShowPrintPreview(false)}
                 className="flex items-center justify-center gap-1.5 px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl font-bold text-xs transition-colors cursor-pointer border border-slate-200 dark:border-slate-700"
               >

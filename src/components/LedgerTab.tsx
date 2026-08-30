@@ -4,9 +4,9 @@
  */
 
 import React, { useState, useMemo } from 'react';
-import { Database } from '../utils';
-import { DailyLedgerEntry, UserRole } from '../types';
-import { SUPPORTED_CURRENCIES, getCurrencyInfo, formatCurrency } from '../currencyUtils';
+import { Database } from '../utils.ts';
+import { DailyLedgerEntry, UserRole } from '../types.ts';
+import { SUPPORTED_CURRENCIES, getCurrencyInfo, formatCurrency } from '../currencyUtils.ts';
 import { 
   FileSpreadsheet, 
   Plus, 
@@ -85,7 +85,9 @@ export default function LedgerTab({ db, onDatabaseUpdate, role }: LedgerTabProps
     setVisibleColumns(updated);
     try {
       localStorage.setItem('smartacc_ledger_visible_cols', JSON.stringify(updated));
-    } catch (e) {}
+    } catch (_e) {
+      /* Ignored */
+    }
   };
   
   // Create / Edit temporary inline input state
@@ -271,7 +273,7 @@ export default function LedgerTab({ db, onDatabaseUpdate, role }: LedgerTabProps
   };
 
   const handlePrint = () => {
-    window.print();
+    globalThis.print();
   };
 
   // Pre-fill next missing day in draft to help user
@@ -375,7 +377,7 @@ export default function LedgerTab({ db, onDatabaseUpdate, role }: LedgerTabProps
               قم بكتابة مبيعات المادة والسعر والكمية لتدوين القيد. يمكنك ربط الكشف مباشرة بحساب المورد أو العميل لترحيل المبالغ وتحديث أرصدتهم فوراً وإبلاغهم.
             </p>
           </div>
-          <button
+          <button type="button"
             id="print_30days_ledger"
             onClick={handlePrint}
             className="flex items-center gap-1.5 px-4.5 py-2.5 text-xs font-bold text-slate-700 dark:text-slate-350 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 rounded-xl cursor-pointer"
@@ -855,7 +857,7 @@ export default function LedgerTab({ db, onDatabaseUpdate, role }: LedgerTabProps
                           </td>
                         )}
                         <td className="px-4 py-2 text-center whitespace-nowrap space-x-1.5 no-print">
-                          <button
+                          <button type="button"
                             id="save_edit_row_btn"
                             onClick={() => handleSaveEdit(entry.id)}
                             className="p-1.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded transition-colors cursor-pointer inline-block"
@@ -863,7 +865,7 @@ export default function LedgerTab({ db, onDatabaseUpdate, role }: LedgerTabProps
                           >
                             <Check size={13} />
                           </button>
-                          <button
+                          <button type="button"
                             id="cancel_edit_row_btn"
                             onClick={handleCancelEdit}
                             className="p-1.5 bg-slate-300 hover:bg-slate-400 text-slate-700 dark:bg-slate-750 dark:hover:bg-slate-700 dark:text-slate-200 rounded transition-colors cursor-pointer inline-block"
@@ -923,7 +925,7 @@ export default function LedgerTab({ db, onDatabaseUpdate, role }: LedgerTabProps
                       <td className="px-4 py-3.5 text-center whitespace-nowrap space-x-1.5 no-print">
                         {role !== 'Salesperson' && !isModificationRestricted ? (
                           <>
-                            <button
+                            <button type="button"
                               id={`start_edit_entry_${entry.id}`}
                               onClick={() => startEditing(entry)}
                               className="p-1.5 bg-blue-50 dark:bg-blue-950/20 text-blue-600 dark:text-blue-400 hover:bg-blue-150 rounded transition-colors inline-block cursor-pointer"
@@ -931,7 +933,7 @@ export default function LedgerTab({ db, onDatabaseUpdate, role }: LedgerTabProps
                             >
                               <Edit2 size={12} />
                             </button>
-                            <button
+                            <button type="button"
                               id={`delete_entry_${entry.id}`}
                               onClick={() => handleDeleteEntry(entry.id)}
                               className="p-1.5 bg-red-50 dark:bg-red-950/25 text-red-500 hover:bg-red-150 rounded transition-colors inline-block cursor-pointer"

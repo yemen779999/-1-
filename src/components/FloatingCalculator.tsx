@@ -78,14 +78,14 @@ export default function FloatingCalculator() {
       }
     };
 
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    globalThis.addEventListener('keydown', handleKeyDown);
+    return () => globalThis.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, displayValue]);
 
   return (
     <div className="no-print">
       {/* Floating Action Button (FAB) */}
-      <button
+      <button type="button"
         onClick={() => setIsOpen(!isOpen)}
         className={`fixed bottom-6 right-6 z-50 p-4 rounded-full shadow-2xl transition-all duration-300 flex items-center justify-center cursor-pointer select-none group border ${
           isOpen
@@ -124,7 +124,7 @@ export default function FloatingCalculator() {
               {displayValue || '0'}
             </div>
             <div className="flex items-center justify-between mt-1 pt-1 border-t border-slate-100/10">
-              <button
+              <button type="button"
                 onClick={handleCopy}
                 disabled={!displayValue || displayValue === 'خطأ'}
                 className="p-1 text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 rounded-md transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
@@ -141,25 +141,25 @@ export default function FloatingCalculator() {
           {/* Grid of keys */}
           <div className="p-3 bg-white dark:bg-slate-900 grid grid-cols-4 gap-2 text-center text-xs font-bold">
             {/* Row 1 */}
-            <button
+            <button type="button"
               onClick={handleClear}
               className="py-3 bg-red-50 hover:bg-red-100 dark:bg-red-950/20 dark:hover:bg-red-950/40 text-red-600 dark:text-red-400 rounded-2xl cursor-pointer transition-all"
             >
               C
             </button>
-            <button
+            <button type="button"
               onClick={() => handleAppend('(')}
               className="py-3 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-750 text-slate-700 dark:text-slate-300 rounded-2xl cursor-pointer transition-all font-mono"
             >
               (
             </button>
-            <button
+            <button type="button"
               onClick={() => handleAppend(')')}
               className="py-3 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-750 text-slate-700 dark:text-slate-300 rounded-2xl cursor-pointer transition-all font-mono"
             >
               )
             </button>
-            <button
+            <button type="button"
               onClick={() => handleAppend('/')}
               className="py-3 bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/20 dark:hover:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 rounded-2xl cursor-pointer transition-all font-mono"
             >
@@ -167,25 +167,25 @@ export default function FloatingCalculator() {
             </button>
 
             {/* Row 2 */}
-            <button
+            <button type="button"
               onClick={() => handleAppend('7')}
               className="py-3 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-750 text-slate-800 dark:text-slate-100 rounded-2xl cursor-pointer transition-all font-mono"
             >
               7
             </button>
-            <button
+            <button type="button"
               onClick={() => handleAppend('8')}
               className="py-3 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-750 text-slate-800 dark:text-slate-100 rounded-2xl cursor-pointer transition-all font-mono"
             >
               8
             </button>
-            <button
+            <button type="button"
               onClick={() => handleAppend('9')}
               className="py-3 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-750 text-slate-800 dark:text-slate-100 rounded-2xl cursor-pointer transition-all font-mono"
             >
               9
             </button>
-            <button
+            <button type="button"
               onClick={() => handleAppend('*')}
               className="py-3 bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/20 dark:hover:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 rounded-2xl cursor-pointer transition-all font-mono"
             >
@@ -193,25 +193,25 @@ export default function FloatingCalculator() {
             </button>
 
             {/* Row 3 */}
-            <button
+            <button type="button"
               onClick={() => handleAppend('4')}
               className="py-3 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-750 text-slate-800 dark:text-slate-100 rounded-2xl cursor-pointer transition-all font-mono"
             >
               4
             </button>
-            <button
+            <button type="button"
               onClick={() => handleAppend('5')}
               className="py-3 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-750 text-slate-800 dark:text-slate-100 rounded-2xl cursor-pointer transition-all font-mono"
             >
               5
             </button>
-            <button
+            <button type="button"
               onClick={() => handleAppend('6')}
               className="py-3 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-750 text-slate-800 dark:text-slate-100 rounded-2xl cursor-pointer transition-all font-mono"
             >
               6
             </button>
-            <button
+            <button type="button"
               onClick={() => handleAppend('-')}
               className="py-3 bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/20 dark:hover:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 rounded-2xl cursor-pointer transition-all font-mono"
             >
@@ -219,25 +219,25 @@ export default function FloatingCalculator() {
             </button>
 
             {/* Row 4 */}
-            <button
+            <button type="button"
               onClick={() => handleAppend('1')}
               className="py-3 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-750 text-slate-800 dark:text-slate-100 rounded-2xl cursor-pointer transition-all font-mono"
             >
               1
             </button>
-            <button
+            <button type="button"
               onClick={() => handleAppend('2')}
               className="py-3 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-750 text-slate-800 dark:text-slate-100 rounded-2xl cursor-pointer transition-all font-mono"
             >
               2
             </button>
-            <button
+            <button type="button"
               onClick={() => handleAppend('3')}
               className="py-3 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-750 text-slate-800 dark:text-slate-100 rounded-2xl cursor-pointer transition-all font-mono"
             >
               3
             </button>
-            <button
+            <button type="button"
               onClick={() => handleAppend('+')}
               className="py-3 bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/20 dark:hover:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 rounded-2xl cursor-pointer transition-all font-mono"
             >
@@ -245,26 +245,26 @@ export default function FloatingCalculator() {
             </button>
 
             {/* Row 5 */}
-            <button
+            <button type="button"
               onClick={() => handleAppend('0')}
               className="py-3 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-750 text-slate-800 dark:text-slate-100 rounded-2xl cursor-pointer transition-all font-mono"
             >
               0
             </button>
-            <button
+            <button type="button"
               onClick={() => handleAppend('.')}
               className="py-3 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-750 text-slate-800 dark:text-slate-100 rounded-2xl cursor-pointer transition-all font-mono"
             >
               .
             </button>
-            <button
+            <button type="button"
               onClick={handleBackspace}
               className="py-3 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-750 text-slate-700 dark:text-slate-300 rounded-2xl cursor-pointer transition-all flex items-center justify-center font-mono"
               title="حذف الرقم الأخير"
             >
               ⌫
             </button>
-            <button
+            <button type="button"
               onClick={handleCalculate}
               className="py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl cursor-pointer transition-all font-mono"
             >

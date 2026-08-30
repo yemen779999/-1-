@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, Plus, FileText, CheckCircle2, Coins } from 'lucide-react';
-import type { Database } from '../utils';
-import { SUPPORTED_CURRENCIES, getCurrencyInfo } from '../currencyUtils';
+import type { Database } from '../utils.ts';
+import { SUPPORTED_CURRENCIES, getCurrencyInfo } from '../currencyUtils.ts';
 
 interface QuickEntryModalProps {
   db: Database;
@@ -114,7 +114,7 @@ export default function QuickEntryModal({ db, isOpen, onClose, onDatabaseUpdate,
                   : 'إدخال قيد سريع'}
             </h3>
           </div>
-          <button 
+          <button type="button"
             onClick={onClose}
             className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 p-2 rounded-xl transition-colors"
           >

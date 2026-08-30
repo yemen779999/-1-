@@ -4,9 +4,9 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { Database } from '../utils';
-import { UserRole } from '../types';
-import { initAuth, googleSignIn, getAccessToken, logout } from '../auth';
+import { Database } from '../utils.ts';
+import { UserRole } from '../types.ts';
+import { initAuth, googleSignIn, getAccessToken, logout } from '../auth.ts';
 import type { User } from 'firebase/auth';
 import { 
   Settings2, 
@@ -1156,7 +1156,7 @@ export default function GatewayTab({ db, onDatabaseUpdate, role }: GatewayTabPro
                 </div>
               ) : (
                 <>
-                  <button
+                  <button type="button"
                     id="trigger_json_backup_btn"
                     onClick={handleCreateBackup}
                     className="flex items-center justify-center gap-1.5 px-4 py-2.5 text-xs font-extrabold text-slate-700 border border-slate-200 hover:bg-slate-50 dark:text-slate-300 dark:border-slate-700 dark:hover:bg-slate-800 rounded-xl shadow-xs transition-colors cursor-pointer w-full md:w-auto shrink-0"
@@ -1166,7 +1166,7 @@ export default function GatewayTab({ db, onDatabaseUpdate, role }: GatewayTabPro
                   </button>
 
                   {!user ? (
-                    <button
+                    <button type="button"
                       onClick={handleDriveLogin}
                       className="flex items-center justify-center gap-2 px-4 py-2.5 text-[11px] font-bold text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-700 rounded-xl shadow-xs transition-colors cursor-pointer w-full md:w-auto"
                     >
@@ -1181,7 +1181,7 @@ export default function GatewayTab({ db, onDatabaseUpdate, role }: GatewayTabPro
                     </button>
                   ) : (
                     <div className="flex flex-col gap-1 w-full md:w-auto">
-                      <button
+                      <button type="button"
                         onClick={handleSaveToDrive}
                         disabled={isDriveUploading}
                         className="flex items-center justify-center gap-1.5 px-6 py-2.5 text-xs font-extrabold text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50 rounded-xl shadow-xs transition-colors cursor-pointer w-full"
@@ -1189,7 +1189,7 @@ export default function GatewayTab({ db, onDatabaseUpdate, role }: GatewayTabPro
                         <Cloud size={13} />
                         <span>{isDriveUploading ? 'يتم الرفع...' : 'نسخ لـ Google Drive'}</span>
                       </button>
-                      <button onClick={handleDriveLogout} className="text-[10px] text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 text-center">
+                      <button type="button" onClick={handleDriveLogout} className="text-[10px] text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 text-center">
                         تسجيل الخروج من ({user.email})
                       </button>
                     </div>

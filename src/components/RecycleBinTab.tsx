@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Database } from '../utils';
-import { UserRole } from '../types';
+import { Database } from '../utils.ts';
+import { UserRole } from '../types.ts';
 import { Trash2, RefreshCcw, FileX, ArchiveRestore, AlertTriangle } from 'lucide-react';
 
 interface RecycleBinTabProps {
@@ -99,7 +99,7 @@ export default function RecycleBinTab({ db, onDatabaseUpdate, role }: RecycleBin
         </div>
 
         <div className="flex gap-2 mb-6">
-          <button
+          <button type="button"
             onClick={() => setActiveTab('accounts')}
             className={`px-4 py-2 rounded-lg font-bold text-sm transition-colors ${
               activeTab === 'accounts' 
@@ -109,7 +109,7 @@ export default function RecycleBinTab({ db, onDatabaseUpdate, role }: RecycleBin
           >
             الحسابات المحذوفة ({db.deletedAccounts.length})
           </button>
-          <button
+          <button type="button"
             onClick={() => setActiveTab('entries')}
             className={`px-4 py-2 rounded-lg font-bold text-sm transition-colors ${
               activeTab === 'entries' 
@@ -119,7 +119,7 @@ export default function RecycleBinTab({ db, onDatabaseUpdate, role }: RecycleBin
           >
             قيود الدفتر ({db.deletedDailyEntries.length})
           </button>
-          <button
+          <button type="button"
             onClick={() => setActiveTab('transactions')}
             className={`px-4 py-2 rounded-lg font-bold text-sm transition-colors ${
               activeTab === 'transactions' 
@@ -152,7 +152,7 @@ export default function RecycleBinTab({ db, onDatabaseUpdate, role }: RecycleBin
                       <td className="p-3">{acc.type === 'supplier' ? 'مورد' : 'عميل'}</td>
                       <td className="p-3 text-slate-500" dir="ltr">{acc.deletedAt ? new Date(acc.deletedAt).toLocaleString('ar-SA') : '-'}</td>
                       <td className="p-3 text-center">
-                        <button
+                        <button type="button"
                           onClick={() => handleRestoreAccount(acc.id)}
                           className="px-3 py-1.5 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 dark:bg-emerald-900/20 dark:text-emerald-400 rounded-lg text-xs font-bold transition-colors inline-flex items-center gap-1.5"
                         >
@@ -191,7 +191,7 @@ export default function RecycleBinTab({ db, onDatabaseUpdate, role }: RecycleBin
                       <td className="p-3 font-mono">{entry.total.toLocaleString()}</td>
                       <td className="p-3 text-slate-500" dir="ltr">{entry.deletedAt ? new Date(entry.deletedAt).toLocaleString('ar-SA') : '-'}</td>
                       <td className="p-3 text-center">
-                        <button
+                        <button type="button"
                           onClick={() => handleRestoreEntry(entry.id)}
                           className="px-3 py-1.5 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 dark:bg-emerald-900/20 dark:text-emerald-400 rounded-lg text-xs font-bold transition-colors inline-flex items-center gap-1.5"
                         >
@@ -234,7 +234,7 @@ export default function RecycleBinTab({ db, onDatabaseUpdate, role }: RecycleBin
                       <td className="p-3 font-mono">{tx.amount.toLocaleString()}</td>
                       <td className="p-3 text-slate-500" dir="ltr">{tx.deletedAt ? new Date(tx.deletedAt).toLocaleString('ar-SA') : '-'}</td>
                       <td className="p-3 text-center">
-                        <button
+                        <button type="button"
                           onClick={() => handleRestoreTransaction(tx.id)}
                           className="px-3 py-1.5 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 dark:bg-emerald-900/20 dark:text-emerald-400 rounded-lg text-xs font-bold transition-colors inline-flex items-center gap-1.5"
                         >

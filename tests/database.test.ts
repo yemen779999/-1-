@@ -1,7 +1,7 @@
 import { test, describe } from 'node:test';
 import assert from 'node:assert/strict';
-import { Database } from '../src/utils.js';
-import { convertAmount, DEFAULT_RATES } from '../src/currencyUtils.js';
+import { Database } from '../src/utils.ts';
+import { convertAmount, DEFAULT_RATES } from '../src/currencyUtils.ts';
 
 describe('Currency Conversion Utils', () => {
   test('convertAmount correctly converts USD to SAR and YER', () => {

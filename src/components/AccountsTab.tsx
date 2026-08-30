@@ -5,9 +5,9 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
 import * as XLSX from 'xlsx';
-import { Database } from '../utils';
-import { Account, Transaction, AccountType, UserRole } from '../types';
-import { SUPPORTED_CURRENCIES, getCurrencyInfo, formatCurrency } from '../currencyUtils';
+import { Database } from '../utils.ts';
+import { Account, Transaction, AccountType, UserRole } from '../types.ts';
+import { SUPPORTED_CURRENCIES, getCurrencyInfo, formatCurrency } from '../currencyUtils.ts';
 import { 
   Users, 
   Plus, 
@@ -984,7 +984,7 @@ export default function AccountsTab({
         {/* Isolated Tabs & Create Account Button */}
         <div className="flex flex-col sm:flex-row gap-4 justify-between items-stretch sm:items-center">
           <div className="bg-slate-100 dark:bg-slate-850 p-1 rounded-xl flex gap-1 flex-1 sm:flex-initial">
-            <button
+            <button type="button"
               id="set_buyers_tab"
               onClick={() => {
                 setActiveType('buyer');
@@ -995,7 +995,7 @@ export default function AccountsTab({
             >
               العملاء والمشترين
             </button>
-            <button
+            <button type="button"
               id="set_suppliers_tab"
               onClick={() => {
                 setActiveType('supplier');
@@ -1011,7 +1011,7 @@ export default function AccountsTab({
           <div className="flex gap-2">
             {onOpenQuickEntry && (
               <>
-                <button
+                <button type="button"
                   onClick={() => onOpenQuickEntry('debit')}
                   className="flex items-center justify-center gap-1 px-2.5 py-2 bg-red-100 hover:bg-red-200 text-red-700 dark:bg-red-900/30 dark:hover:bg-red-900/50 dark:text-red-400 rounded-xl transition-colors cursor-pointer text-[10px] font-bold"
                   title="اسحب مبلغ دين"
@@ -1019,7 +1019,7 @@ export default function AccountsTab({
                   <ArrowDown size={14} className="stroke-[2.5]" />
                   <span className="hidden sm:inline">آجل ديون</span>
                 </button>
-                <button
+                <button type="button"
                   onClick={() => onOpenQuickEntry('credit')}
                   className="flex items-center justify-center gap-1 px-2.5 py-2 bg-emerald-100 hover:bg-emerald-200 text-emerald-700 dark:bg-emerald-900/30 dark:hover:bg-emerald-900/50 dark:text-emerald-400 rounded-xl transition-colors cursor-pointer text-[10px] font-bold"
                   title="تسديد مبلغ"
@@ -1029,7 +1029,7 @@ export default function AccountsTab({
                 </button>
               </>
             )}
-            <button
+            <button type="button"
               id="open_create_account_modal"
               onClick={() => {
                 if (isModificationRestricted) {
@@ -1129,7 +1129,7 @@ export default function AccountsTab({
                     </div>
                   </div>
 
-                  <button 
+                  <button type="button"
                     id={`delete_acc_btn_${acc.id}`}
                     onClick={(e) => {
                       e.stopPropagation();
@@ -1228,7 +1228,7 @@ export default function AccountsTab({
                 {role === 'Salesperson' ? (
                   <span className="text-[10px] font-bold text-slate-400 bg-slate-100 dark:bg-slate-800 px-3 py-1.5 rounded-lg">قراءة فقط للحساب</span>
                 ) : isModificationRestricted ? (
-                  <button
+                  <button type="button"
                     id="open_quick_tx_modal_restricted"
                     onClick={() => alert('خطأ: تأصيل القيود المالية محمي لمدير النظام فقط بموجب سياسة الحماية النشطة.')}
                     className="flex items-center gap-1.5 text-xs font-bold text-slate-450 dark:text-slate-400 bg-slate-100/80 dark:bg-slate-800/40 px-3.5 py-2.5 rounded-xl cursor-not-allowed border border-slate-200/40 dark:border-slate-750"
@@ -1237,7 +1237,7 @@ export default function AccountsTab({
                     <span>قيد مالي (محمي للمدير)</span>
                   </button>
                 ) : (
-                  <button
+                  <button type="button"
                     id="open_quick_tx_modal"
                     onClick={() => setShowTxModal(true)}
                     className={`flex items-center gap-1.5 text-xs font-bold text-white px-3.5 py-2.5 rounded-xl cursor-pointer ${selectedAcc.type === 'supplier' ? 'bg-amber-500 hover:bg-amber-600' : 'bg-blue-600 hover:bg-blue-700'}`}
@@ -1248,7 +1248,7 @@ export default function AccountsTab({
                 )}
                 {role !== 'Salesperson' && (
                   <>
-                    <button
+                    <button type="button"
                       id="open_edit_account_modal"
                       onClick={openEditModal}
                       className="flex items-center gap-1.5 text-xs font-bold text-slate-700 dark:text-slate-300 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 px-3.5 py-2.5 rounded-xl transition-all cursor-pointer"
@@ -1257,7 +1257,7 @@ export default function AccountsTab({
                       <span>تعديل بيانات الحساب</span>
                     </button>
 
-                    <button
+                    <button type="button"
                       id="open_import_data_modal"
                       onClick={() => setShowImportModal(true)}
                       className="flex items-center gap-1.5 text-xs font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-500/10 hover:bg-emerald-100 dark:hover:bg-emerald-950/30 px-3.5 py-2.5 rounded-xl transition-all cursor-pointer"
@@ -1267,7 +1267,7 @@ export default function AccountsTab({
                     </button>
                   </>
                 )}
-                <button
+                <button type="button"
                   id="open_ledger_print_preview"
                   onClick={() => setShowPrintPreview(true)}
                   className="flex items-center gap-1.5 text-xs font-bold text-amber-700 dark:text-amber-400 bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/30 dark:hover:bg-amber-900/40 px-3.5 py-2.5 rounded-xl transition-all cursor-pointer border border-amber-200/50 dark:border-amber-800/30"
@@ -1276,7 +1276,7 @@ export default function AccountsTab({
                   <span>معاينة الطباعة</span>
                 </button>
 
-                <button
+                <button type="button"
                   id="print_full_ledger_compact"
                   onClick={handleCompactPrint}
                   className="flex items-center gap-1.5 text-xs font-bold text-indigo-700 dark:text-indigo-400 bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/30 dark:hover:bg-indigo-900/40 px-3.5 py-2.5 rounded-xl transition-all cursor-pointer border border-indigo-200/50 dark:border-indigo-800/30"
@@ -1285,7 +1285,7 @@ export default function AccountsTab({
                   <span>طبع الحساب كامل في صفحة واحدة</span>
                 </button>
 
-                <button
+                <button type="button"
                   id="print_ledger_pdf"
                   onClick={handlePrint}
                   className="flex items-center gap-1.5 text-xs font-bold text-slate-700 dark:text-slate-300 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 px-3.5 py-2.5 rounded-xl transition-all cursor-pointer"
@@ -1294,7 +1294,7 @@ export default function AccountsTab({
                   <span>تصدير كشف PDF / طباعة</span>
                 </button>
 
-                <button
+                <button type="button"
                   id="export_ledger_excel"
                   onClick={handleExportExcel}
                   className="flex items-center gap-1.5 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 px-3.5 py-2.5 rounded-xl transition-all cursor-pointer"
@@ -1425,7 +1425,7 @@ export default function AccountsTab({
 
             {/* View Mode Toggle */}
             <div className="flex bg-slate-100 dark:bg-slate-850 p-1 rounded-xl w-fit no-print">
-              <button
+              <button type="button"
                 onClick={() => setLedgerViewMode('detailed')}
                 className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${
                   ledgerViewMode === 'detailed' 
@@ -1435,7 +1435,7 @@ export default function AccountsTab({
               >
                 كشف حساب تفصيلي
               </button>
-              <button
+              <button type="button"
                 onClick={() => setLedgerViewMode('monthly')}
                 className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${
                   ledgerViewMode === 'monthly' 
@@ -1807,7 +1807,7 @@ export default function AccountsTab({
                           {role !== 'Salesperson' && !isModificationRestricted && (
                             <td className="px-3 py-3.5 text-center no-print">
                               <div className="flex items-center justify-center gap-1.5">
-                                <button
+                                <button type="button"
                                   id={`edit_tx_btn_${tx.id}`}
                                   onClick={() => handleOpenEditTxModal(tx)}
                                   className="text-blue-500 hover:text-blue-700 bg-blue-50 dark:bg-blue-950/20 p-2 rounded-lg transition-colors cursor-pointer"
@@ -1815,7 +1815,7 @@ export default function AccountsTab({
                                 >
                                   <Edit size={12} />
                                 </button>
-                                <button
+                                <button type="button"
                                   id={`delete_tx_btn_${tx.id}`}
                                   onClick={() => handleDeleteTransaction(tx.id)}
                                   className="text-red-500 hover:text-red-700 bg-red-50 dark:bg-red-950/20 p-2 rounded-lg transition-colors cursor-pointer"
@@ -1954,7 +1954,7 @@ export default function AccountsTab({
               </div>
 
               {/* Start System Print Dialog */}
-              <button
+              <button type="button"
                 onClick={() => globalThis.print()}
                 className="flex items-center justify-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold text-xs transition-colors shadow-md cursor-pointer"
               >
@@ -1963,7 +1963,7 @@ export default function AccountsTab({
               </button>
 
               {/* Close Modal Preview */}
-              <button
+              <button type="button"
                 onClick={() => setShowPrintPreview(false)}
                 className="flex items-center justify-center gap-1.5 px-4.5 py-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl font-bold text-xs transition-colors cursor-pointer border border-slate-200 dark:border-slate-700"
               >
@@ -2183,7 +2183,7 @@ export default function AccountsTab({
           <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl w-full max-w-md p-6 shadow-xl space-y-6 text-right">
             <div className="flex justify-between items-center border-b border-slate-100 dark:border-slate-850 pb-3">
               <h3 className="text-base font-bold text-slate-800 dark:text-slate-100">إضافة حساب جديد ({activeType === 'supplier' ? 'مورد' : 'عميل'})</h3>
-              <button
+              <button type="button"
                 id="close_create_modal_btn"
                 onClick={() => setShowCreateModal(false)}
                 className="text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300"
@@ -2318,7 +2318,7 @@ export default function AccountsTab({
           <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl w-full max-w-md p-6 shadow-xl space-y-6 text-right my-auto">
             <div className="flex justify-between items-center border-b border-slate-100 dark:border-slate-850 pb-3">
               <h3 className="text-base font-bold text-slate-800 dark:text-slate-100">تعديل بيانات الحساب</h3>
-              <button
+              <button type="button"
                 id="close_edit_modal_btn"
                 onClick={() => setShowEditModal(false)}
                 className="text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300"
@@ -2444,7 +2444,7 @@ export default function AccountsTab({
                 <h3 className="text-base font-bold text-slate-800 dark:text-slate-100">تأصيل معالجة قيد مالي</h3>
                 <p className="text-[10px] text-slate-400 dark:text-slate-500">حساب: {selectedAcc.name}</p>
               </div>
-              <button
+              <button type="button"
                 id="close_tx_modal_btn"
                 onClick={() => setShowTxModal(false)}
                 className="text-slate-400 hover:text-slate-600"
@@ -2647,7 +2647,7 @@ export default function AccountsTab({
           <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl w-full max-w-md p-6 shadow-xl space-y-6 text-right">
             <div className="flex justify-between items-center border-b pb-4 border-slate-100 dark:border-slate-800">
               <h3 className="text-sm font-bold text-slate-800 dark:text-slate-100">تعديل قيد مالي في كشف الحساب</h3>
-              <button onClick={() => { setShowEditTxModal(false); setEditingTx(null); }} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300">
+              <button type="button" onClick={() => { setShowEditTxModal(false); setEditingTx(null); }} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300">
                 <Check size={18} />
               </button>
             </div>
@@ -2802,7 +2802,7 @@ export default function AccountsTab({
                 <h3 className="text-sm font-bold text-slate-800 dark:text-slate-100 text-right">استيراد كشف قيود مالية لحساب العميل</h3>
                 <p className="text-[10px] text-slate-400 text-right">الحساب الهدف: {selectedAcc.name} ({selectedAcc.currency || 'YER'})</p>
               </div>
-              <button 
+              <button type="button"
                 onClick={() => { setShowImportModal(false); setParsedPreviewRows([]); setImportFile(null); setPdfTextData(''); }} 
                 className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
               >
@@ -2856,7 +2856,9 @@ export default function AccountsTab({
                   <textarea
                     value={pdfTextData}
                     onChange={(e) => parsePdfText(e.target.value)}
-                    placeholder={'مثال: الصق أسطر الجدول بالتنسيق التالي:\n2026-06-03  مبيعات أخشاب زان  15000  مدين\n2026-06-05  تسديد من الحساب  5000  دائن'}
+                    placeholder="مثال: الصق أسطر الجدول بالتنسيق التالي:
+2026-06-03  مبيعات أخشاب زان  15000  مدين
+2026-06-05  تسديد من الحساب  5000  دائن"
                     className="w-full h-36 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700/60 rounded-xl px-4 py-3 text-slate-800 dark:text-slate-100 font-mono focus:outline-hidden focus:ring-2 focus:ring-blue-500 text-right"
                   />
                   <p className="text-[10px] text-slate-400 leading-relaxed text-right">
