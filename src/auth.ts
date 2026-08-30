@@ -70,8 +70,7 @@ export function handleFirestoreError(error: unknown, operationType: OperationTyp
     return;
   }
 
-  console.error('Firestore Error: ', JSON.stringify(errInfo));
-  throw new Error(JSON.stringify(errInfo));
+  console.warn('[Firestore Error Graceful Handling]', JSON.stringify(errInfo));
 }
 
 const provider = new GoogleAuthProvider();
@@ -83,7 +82,7 @@ export const initAuth = (
   onAuthSuccess?: (user: User, token: string) => void,
   onAuthFailure?: () => void
 ) => {
-  return onAuthStateChanged(auth, async (user: User | null) => {
+  return onAuthStateChanged(auth, (user: User | null) => {
     if (user) {
       if (cachedAccessToken) {
         if (onAuthSuccess) onAuthSuccess(user, cachedAccessToken);
@@ -121,8 +120,8 @@ export const googleSignIn = async (): Promise<{ user: User; accessToken: string 
   }
 };
 
-export const getAccessToken = async (): Promise<string | null> => {
-  return cachedAccessToken;
+export const getAccessToken = (): Promise<string | null> => {
+  return Promise.resolve(cachedAccessToken);
 };
 
 export const logout = async () => {

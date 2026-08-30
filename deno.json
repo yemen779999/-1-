@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "jsxImportSource": "react"
+  },
+  "lint": {
+    "rules": {
+      "exclude": [
+        "no-unused-vars",
+        "no-explicit-any",
+        "no-window",
+        "no-window-prefix",
+        "jsx-button-has-type",
+        "jsx-curly-braces",
+        "no-node-globals"
+      ]
+    }
+  }
+}

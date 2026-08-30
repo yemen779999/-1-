@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Database } from '../utils';
+import { Database } from '../utils.ts';
 import { 
   TrendingUp, 
   TrendingDown, 
@@ -243,7 +243,7 @@ export default function ReportsTab({ db }: ReportsTabProps) {
   }, [agingReport]);
 
   const handlePrint = () => {
-    window.print();
+    globalThis.print();
   };
 
   return (
@@ -316,7 +316,7 @@ export default function ReportsTab({ db }: ReportsTabProps) {
         </div>
         
         <div className="flex flex-wrap gap-2.5 items-center">
-          <button
+          <button type="button"
             onClick={handlePrint}
             className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl shadow-xs transition-colors cursor-pointer"
           >
@@ -385,7 +385,7 @@ export default function ReportsTab({ db }: ReportsTabProps) {
 
       {/* Sub tabs navigation */}
       <div className="border-b border-slate-100 dark:border-slate-850 flex gap-4 no-print" id="reports_subtabs">
-        <button
+        <button type="button"
           onClick={() => setSelectedSubTab('pl')}
           className={`pb-3 text-xs font-bold border-b-2 transition-all cursor-pointer ${
             selectedSubTab === 'pl' 
@@ -395,7 +395,7 @@ export default function ReportsTab({ db }: ReportsTabProps) {
         >
           جدول الأرباح والخسائر (Profit & Loss)
         </button>
-        <button
+        <button type="button"
           onClick={() => setSelectedSubTab('sales')}
           className={`pb-3 text-xs font-bold border-b-2 transition-all cursor-pointer ${
             selectedSubTab === 'sales' 
@@ -405,7 +405,7 @@ export default function ReportsTab({ db }: ReportsTabProps) {
         >
           تحليلات المبيعات وحسب السلعة
         </button>
-        <button
+        <button type="button"
           onClick={() => setSelectedSubTab('aging')}
           className={`pb-3 text-xs font-bold border-b-2 transition-all cursor-pointer ${
             selectedSubTab === 'aging' 

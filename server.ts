@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import process from "node:process";
 import express from "express";
 import path from "path";
 import { createServer as createViteServer } from "vite";

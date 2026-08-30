@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Database } from '../utils';
-import { UserRole, ActivityLog } from '../types';
+import { Database } from '../utils.ts';
+import { UserRole, ActivityLog } from '../types.ts';
 import { FileText, Search, Trash2, Calendar, User, Tag, Filter, CheckCircle, Edit, Trash, RotateCcw } from 'lucide-react';
 
 interface ActivityLogTabProps {
@@ -111,14 +111,14 @@ export default function ActivityLogTab({ db, onDatabaseUpdate, role, onNavigate 
 
           {role === 'Admin' && (
             <div className="flex items-center gap-2">
-              <button
+              <button type="button"
                 onClick={() => onNavigate('backup')}
                 className="inline-flex items-center gap-2 bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/20 dark:hover:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 px-4 py-2.5 rounded-xl font-bold text-sm transition-colors duration-150 self-start md:self-auto"
               >
                 <RotateCcw size={16} />
                 <span>استعادة البيانات</span>
               </button>
-              <button
+              <button type="button"
                 onClick={handleClearLogs}
                 className="inline-flex items-center gap-2 bg-red-50 hover:bg-red-100 dark:bg-red-950/20 dark:hover:bg-red-900/30 text-red-600 dark:text-red-400 px-4 py-2.5 rounded-xl font-bold text-sm transition-colors duration-150 self-start md:self-auto"
               >
@@ -251,7 +251,7 @@ export default function ActivityLogTab({ db, onDatabaseUpdate, role, onNavigate 
                       <td className="p-4">
                         {getActionBadge(log.actionType)}
                         {log.actionType === 'delete' && (
-                          <button
+                          <button type="button"
                             onClick={() => onNavigate('recycle')}
                             className="mr-2 px-2 py-1 bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 rounded-lg text-[10px] font-bold hover:bg-purple-100 transition-colors"
                           >

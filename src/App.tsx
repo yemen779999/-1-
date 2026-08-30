@@ -5,25 +5,26 @@
 
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import CryptoJS from 'crypto-js';
-import { Database } from './utils';
-import DashboardTab from './components/DashboardTab';
-import AccountsTab from './components/AccountsTab';
-import LedgerTab from './components/LedgerTab';
-import GatewayTab from './components/GatewayTab';
-import ReportsTab from './components/ReportsTab';
-import SyncImportTab from './components/SyncImportTab';
-import AIControlDashboard from './components/AIControlDashboard';
-import InvoiceTab from './components/InvoiceTab';
-import RecycleBinTab from './components/RecycleBinTab';
-import ActivityLogTab from './components/ActivityLogTab';
-import { BackupCenterTab } from './components/BackupCenterTab';
-import { BackupService } from './backupService';
-import { UserRole } from './types';
-import { initAuth, auth, googleSignIn, logout, firestore, handleFirestoreError, OperationType } from './auth';
+import { Database } from './utils.ts';
+import DashboardTab from './components/DashboardTab.tsx';
+import AccountsTab from './components/AccountsTab.tsx';
+import LedgerTab from './components/LedgerTab.tsx';
+import GatewayTab from './components/GatewayTab.tsx';
+import ReportsTab from './components/ReportsTab.tsx';
+import SyncImportTab from './components/SyncImportTab.tsx';
+import AIControlDashboard from './components/AIControlDashboard.tsx';
+import InvoiceTab from './components/InvoiceTab.tsx';
+import RecycleBinTab from './components/RecycleBinTab.tsx';
+import ActivityLogTab from './components/ActivityLogTab.tsx';
+import { BackupCenterTab } from './components/BackupCenterTab.tsx';
+import { BackupService } from './backupService.ts';
+import { UserRole } from './types.ts';
+import { initAuth, auth, googleSignIn, logout, firestore, handleFirestoreError, OperationType } from './auth.ts';
+import { User } from 'firebase/auth';
 import { doc, setDoc, onSnapshot, getDoc } from 'firebase/firestore';
-import FloatingCalculator from './components/FloatingCalculator';
-import QuickEntryModal from './components/QuickEntryModal';
-import ErrorBoundary from './components/ErrorBoundary';
+import FloatingCalculator from './components/FloatingCalculator.tsx';
+import QuickEntryModal from './components/QuickEntryModal.tsx';
+import ErrorBoundary from './components/ErrorBoundary.tsx';
 import { 
   Building2, 
   LayoutDashboard, 
@@ -36,12 +37,10 @@ import {
   Layers,
   ArrowLeftRight,
   BarChart3,
-  ShieldCheck,
   Lock,
   Briefcase,
   Coins,
   Activity,
-  Palette,
   Sun,
   Moon,
   Wallet,
@@ -61,7 +60,6 @@ import {
   ArrowUp,
   ArrowDown,
   Zap,
-  Plus,
   Trash2,
   LogIn,
   LogOut,
@@ -101,7 +99,7 @@ export default function App() {
   };
 
   // Auth User
-  const [authUser, setAuthUser] = useState<any>(null);
+  const [authUser, setAuthUser] = useState<User | null>(null);
   const [cloudSyncStatus, setCloudSyncStatus] = useState<'idle' | 'syncing' | 'success' | 'error'>('idle');
   const isImportingRef = useRef(false);
   
@@ -109,7 +107,7 @@ export default function App() {
   const [isSyncModalOpen, setIsSyncModalOpen] = useState(false);
 
   // User role state
-  const [userRole, setUserRole] = useState<UserRole>('Admin');
+  const [userRole, _setUserRole] = useState<UserRole>('Admin');
 
   // Active view tab state (default: dashboard)
   const [activeTab, setActiveTab] = useState<string>('dashboard');
@@ -136,12 +134,12 @@ export default function App() {
       }
     };
 
-    window.addEventListener('error', handleError);
-    window.addEventListener('unhandledrejection', handlePromiseRejection);
+    globalThis.addEventListener('error', handleError);
+    globalThis.addEventListener('unhandledrejection', handlePromiseRejection);
 
     return () => {
-      window.removeEventListener('error', handleError);
-      window.removeEventListener('unhandledrejection', handlePromiseRejection);
+      globalThis.removeEventListener('error', handleError);
+      globalThis.removeEventListener('unhandledrejection', handlePromiseRejection);
     };
   }, []);
 
@@ -158,12 +156,12 @@ export default function App() {
     const handleOnline = () => setIsOnline(true);
     const handleOffline = () => setIsOnline(false);
 
-    window.addEventListener('online', handleOnline);
-    window.addEventListener('offline', handleOffline);
+    globalThis.addEventListener('online', handleOnline);
+    globalThis.addEventListener('offline', handleOffline);
 
     return () => {
-      window.removeEventListener('online', handleOnline);
-      window.removeEventListener('offline', handleOffline);
+      globalThis.removeEventListener('online', handleOnline);
+      globalThis.removeEventListener('offline', handleOffline);
     };
   }, []);
 
@@ -191,18 +189,18 @@ export default function App() {
 
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 300) {
+      if (globalThis.scrollY > 300) {
         setShowBackToTop(true);
       } else {
         setShowBackToTop(false);
       }
     };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    globalThis.addEventListener('scroll', handleScroll);
+    return () => globalThis.removeEventListener('scroll', handleScroll);
   }, []);
 
   const handleScrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    globalThis.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   // Global Keyboard Shortcuts (اختصارات لوحة المفاتيح)
@@ -228,13 +226,13 @@ export default function App() {
       }
     };
 
-    window.addEventListener('keydown', handleGlobalShortcuts);
-    return () => window.removeEventListener('keydown', handleGlobalShortcuts);
+    globalThis.addEventListener('keydown', handleGlobalShortcuts);
+    return () => globalThis.removeEventListener('keydown', handleGlobalShortcuts);
   }, []);
 
   // PWA (Progressive Web App) offline installation states
-  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
-  const [showInstallBadge, setShowInstallBadge] = useState(false);
+  const [deferredPrompt, setDeferredPrompt] = useState<unknown>(null);
+  const [_showInstallBadge, setShowInstallBadge] = useState(false);
   const [showInstallHelp, setShowInstallHelp] = useState(false);
 
   useEffect(() => {
@@ -244,29 +242,30 @@ export default function App() {
       setShowInstallBadge(true);
     };
 
-    window.addEventListener('beforeinstallprompt', handleBeforeInstall);
+    globalThis.addEventListener('beforeinstallprompt', handleBeforeInstall);
 
-    window.addEventListener('appinstalled', () => {
+    globalThis.addEventListener('appinstalled', () => {
       console.log('[PWA] App installed successfully');
       setDeferredPrompt(null);
       setShowInstallBadge(false);
     });
 
     // Check if running in standalone window
-    if (window.matchMedia('(display-mode: standalone)').matches) {
+    if (globalThis.matchMedia('(display-mode: standalone)').matches) {
       setShowInstallBadge(false);
     }
 
     return () => {
-      window.removeEventListener('beforeinstallprompt', handleBeforeInstall);
+      globalThis.removeEventListener('beforeinstallprompt', handleBeforeInstall);
     };
   }, []);
 
   const handleInstallApp = async () => {
     if (deferredPrompt) {
       try {
-        deferredPrompt.prompt();
-        const { outcome } = await deferredPrompt.userChoice;
+        const promptEvent = deferredPrompt as { prompt: () => void; userChoice: Promise<{ outcome: string }> };
+        promptEvent.prompt();
+        const { outcome } = await promptEvent.userChoice;
         console.log(`[PWA] Install choice outcome: ${outcome}`);
       } catch (e) {
         console.error('[PWA] Installation error:', e);
@@ -352,7 +351,7 @@ export default function App() {
       performAutoBackup().catch(err => console.error('[Auto Backup] Online handler error:', err));
       initializeCloudDb().catch(err => console.error('[Firestore Sync] Online handler error:', err));
     };
-    window.addEventListener('online', handleOnline);
+    globalThis.addEventListener('online', handleOnline);
 
     setCloudSyncStatus(navigator.onLine ? 'syncing' : 'success');
     const docRef = doc(firestore, "user_databases", authUser.uid);
@@ -431,7 +430,7 @@ export default function App() {
 
     return () => {
       unsubscribe();
-      window.removeEventListener('online', handleOnline);
+      globalThis.removeEventListener('online', handleOnline);
     };
   }, [authUser, db]);
 
@@ -498,7 +497,7 @@ export default function App() {
     return 'bg-blue-600';
   }, [dbVersion, db.appAccentColor]);
 
-  const accentBorder = useMemo(() => {
+  const _accentBorder = useMemo(() => {
     const col = db.appAccentColor || 'blue';
     if (col === 'slate') return 'border-slate-300 dark:border-slate-800';
     if (col === 'indigo') return 'border-indigo-600/30';
@@ -540,7 +539,7 @@ export default function App() {
     return 'hover:text-blue-600';
   }, [dbVersion, db.appAccentColor]);
 
-  const accentText = useMemo(() => {
+  const _accentText = useMemo(() => {
     const col = db.appAccentColor || 'blue';
     if (col === 'slate') return 'text-slate-900 dark:text-slate-100';
     if (col === 'indigo') return 'text-indigo-600 dark:text-indigo-400';
@@ -715,7 +714,7 @@ export default function App() {
 
         {/* Desktop Navigation Links */}
         <nav className="flex-1 flex flex-col gap-2 p-3 xl:p-4" id="desktop_navbar">
-          <button
+          <button type="button"
             id="nav_btn_dashboard"
             onClick={() => handleNavigateToTab('dashboard')}
             title="العودة للوحة القيادة وموجز العمليات المالية وتحليل الحركة اليومية"
@@ -729,7 +728,7 @@ export default function App() {
             <span className="hidden xl:block">الرئيسية</span>
           </button>
 
-          <button
+          <button type="button"
             id="nav_btn_accounts"
             onClick={() => {
               setSelectedAccountId(undefined);
@@ -746,7 +745,7 @@ export default function App() {
             <span className="hidden xl:block">الحسابات والكشوفات</span>
           </button>
 
-          <button
+          <button type="button"
             id="nav_btn_ledger"
             onClick={() => handleNavigateToTab('ledger')}
             title="دفتر قيود اليومية لآخر 30 يوماً وتسجيل المبيعات والمشتريات وتفاصيل الديون والمسودات"
@@ -760,7 +759,7 @@ export default function App() {
             <span className="hidden xl:block">دفتر الـ 30 يوماً</span>
           </button>
 
-          <button
+          <button type="button"
             id="nav_btn_invoice"
             onClick={() => handleNavigateToTab('invoice')}
             title="إنشاء فاتورة وطباعتها وتعديل الطباعة"
@@ -775,7 +774,7 @@ export default function App() {
           </button>
 
           {userRole !== 'Salesperson' && (
-            <button
+            <button type="button"
               id="nav_btn_reports"
               onClick={() => handleNavigateToTab('reports')}
               title="تحليل الحركات المالية الشاملة والرسوم البيانية وتلخيص الأرباح والخسائر ومستويات المبيعات"
@@ -791,7 +790,7 @@ export default function App() {
           )}
 
           {userRole !== 'Salesperson' && (
-            <button
+            <button type="button"
               id="nav_btn_ai_control"
               onClick={() => handleNavigateToTab('ai-control')}
               title="مستشار الذكاء الاصطناعي الذكي لتوجيه النظام وتحليل الأداء والرد على التساؤلات"
@@ -807,7 +806,7 @@ export default function App() {
           )}
 
           {userRole !== 'Salesperson' && (
-            <button
+            <button type="button"
               id="nav_btn_sync_import"
               onClick={() => handleNavigateToTab('sync-import')}
               title="استيراد كشوفات الحسابات والقيود من ملفات Excel والتحليل التلقائي بالفواتير بـ AI"
@@ -823,7 +822,7 @@ export default function App() {
           )}
 
           {userRole !== 'Salesperson' && (
-            <button
+            <button type="button"
               id="nav_btn_recycle"
               onClick={() => handleNavigateToTab('recycle')}
               title="سلة المحذوفات"
@@ -839,7 +838,7 @@ export default function App() {
           )}
 
           {userRole !== 'Salesperson' && (
-            <button
+            <button type="button"
               id="nav_btn_activity_log"
               onClick={() => handleNavigateToTab('activity-log')}
               title="سجل العمليات"
@@ -854,7 +853,7 @@ export default function App() {
             </button>
           )}
 
-          <button
+          <button type="button"
             id="nav_btn_backup"
             onClick={() => handleNavigateToTab('backup')}
             title="نظام النسخ الاحتياطي السحابي"
@@ -869,7 +868,7 @@ export default function App() {
           </button>
 
           {userRole !== 'Salesperson' && (
-            <button
+            <button type="button"
               id="nav_btn_gateway"
               onClick={() => handleNavigateToTab('gateway')}
               title="تعديل إعدادات بوابات الإرسال والرسائل التلقائية وهواية النظام والألوان والعملات"
@@ -889,7 +888,7 @@ export default function App() {
         {/* Desktop Sidebar Bottom Actions */}
         <div className="p-3 xl:p-4 border-t border-slate-100 dark:border-slate-800/80 space-y-3 flex flex-col items-center xl:items-stretch">
           
-          <button
+          <button type="button"
             id="day_night_mode_switcher"
             onClick={() => setDarkMode(!darkMode)}
             className="flex items-center justify-center xl:justify-start gap-3 p-2.5 xl:px-3.5 xl:py-3 rounded-xl text-[11px] font-black transition-all bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-750 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700/60 cursor-pointer w-full mx-auto xl:mx-0"
@@ -932,7 +931,7 @@ export default function App() {
               <div className="flex items-center gap-2">
                 {authUser ? (
                   <div className="flex items-center gap-1">
-                    <button
+                    <button type="button"
                       onClick={() => setIsSyncModalOpen(true)}
                       className="p-1 flex items-center justify-center hover:opacity-80 transition-opacity cursor-pointer"
                       title="حسابي والملف الشخصي"
@@ -945,14 +944,14 @@ export default function App() {
                     </button>
                   </div>
                 ) : (
-                  <button
+                  <button type="button"
                     onClick={() => googleSignIn().catch(err => console.error('[Auth] Sign in error:', err))}
                     className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-xl"
                   >
                     <LogIn size={18} />
                   </button>
                 )}
-                <button
+                <button type="button"
                   id="mobile_menu_trigger"
                   onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                   className="p-2 text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl focus:outline-hidden"
@@ -1022,7 +1021,7 @@ export default function App() {
             
             {authUser ? (
               <div className="flex items-center gap-2 bg-slate-50 dark:bg-slate-800/80 px-2 py-1.5 rounded-lg border border-slate-100 dark:border-slate-700/60">
-                <button 
+                <button type="button"
                   onClick={() => setIsSyncModalOpen(true)}
                   className="flex items-center gap-2 hover:opacity-80 transition-opacity cursor-pointer"
                   title="حسابي والملف الشخصي"
@@ -1038,7 +1037,7 @@ export default function App() {
                 </button>
               </div>
             ) : (
-              <button
+              <button type="button"
                 onClick={() => googleSignIn().catch(err => console.error('[Auth] Sign in error:', err))}
                 className="flex items-center gap-1.5 text-[10px] font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/20 hover:bg-blue-100 dark:hover:bg-blue-900/40 rounded-xl px-3 py-1.5 transition-colors border border-blue-100 dark:border-blue-800/50"
               >
@@ -1057,7 +1056,7 @@ export default function App() {
       {mobileMenuOpen && (
         <div className="md:hidden fixed inset-0 top-16 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 z-30 flex flex-col p-6 space-y-4 shadow-xl text-right no-print overflow-y-auto transition-colors duration-200" id="mobile_navbar_overlay">
           
-          <button
+          <button type="button"
             id="mob_nav_btn_dashboard"
             onClick={() => handleNavigateToTab('dashboard')}
             className={`flex items-center justify-between p-4 rounded-xl text-xs font-extrabold transition-all ${
@@ -1072,7 +1071,7 @@ export default function App() {
             </span>
           </button>
 
-          <button
+          <button type="button"
             id="mob_nav_btn_accounts"
             onClick={() => {
               setSelectedAccountId(undefined);
@@ -1090,7 +1089,7 @@ export default function App() {
             </span>
           </button>
 
-          <button
+          <button type="button"
             id="mob_nav_btn_ledger"
             onClick={() => handleNavigateToTab('ledger')}
             className={`flex items-center justify-between p-4 rounded-xl text-xs font-extrabold transition-all ${
@@ -1105,7 +1104,7 @@ export default function App() {
             </span>
           </button>
 
-          <button
+          <button type="button"
             id="mob_nav_btn_invoice"
             onClick={() => handleNavigateToTab('invoice')}
             className={`flex items-center justify-between p-4 rounded-xl text-xs font-extrabold transition-all ${
@@ -1121,7 +1120,7 @@ export default function App() {
           </button>
 
           {userRole !== 'Salesperson' && (
-            <button
+            <button type="button"
               id="mob_nav_btn_reports"
               onClick={() => handleNavigateToTab('reports')}
               className={`flex items-center justify-between p-4 rounded-xl text-xs font-extrabold transition-all ${
@@ -1137,7 +1136,7 @@ export default function App() {
             </button>
           )}
 
-          <button
+          <button type="button"
             id="mob_nav_btn_backup"
             onClick={() => handleNavigateToTab('backup')}
             className={`flex items-center justify-between p-4 rounded-xl text-xs font-extrabold transition-all ${
@@ -1153,7 +1152,7 @@ export default function App() {
           </button>
 
           {userRole !== 'Salesperson' && (
-            <button
+            <button type="button"
               id="mob_nav_btn_ai_control"
               onClick={() => handleNavigateToTab('ai-control')}
               className={`flex items-center justify-between p-4 rounded-xl text-xs font-extrabold transition-all ${
@@ -1170,7 +1169,7 @@ export default function App() {
           )}
 
           {userRole !== 'Salesperson' && (
-            <button
+            <button type="button"
               id="mob_nav_btn_sync_import"
               onClick={() => handleNavigateToTab('sync-import')}
               className={`flex items-center justify-between p-4 rounded-xl text-xs font-extrabold transition-all ${
@@ -1187,7 +1186,7 @@ export default function App() {
           )}
 
           {userRole !== 'Salesperson' && (
-            <button
+            <button type="button"
               id="mob_nav_btn_recycle"
               onClick={() => handleNavigateToTab('recycle')}
               className={`flex items-center justify-between p-4 rounded-xl text-xs font-extrabold transition-all ${
@@ -1204,7 +1203,7 @@ export default function App() {
           )}
 
           {userRole !== 'Salesperson' && (
-            <button
+            <button type="button"
               id="mob_nav_btn_activity_log"
               onClick={() => handleNavigateToTab('activity-log')}
               className={`flex items-center justify-between p-4 rounded-xl text-xs font-extrabold transition-all ${
@@ -1221,7 +1220,7 @@ export default function App() {
           )}
 
           {userRole !== 'Salesperson' && (
-            <button
+            <button type="button"
               id="mob_nav_btn_gateway"
               onClick={() => handleNavigateToTab('gateway')}
               className={`flex items-center justify-between p-4 rounded-xl text-xs font-extrabold transition-all ${
@@ -1240,7 +1239,7 @@ export default function App() {
           {/* Mobile Offline Install Section */}
           <div className="border-t border-slate-100 dark:border-slate-800/80 pt-4 flex flex-col gap-2">
             <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 block mb-1">التشغيل كتطبيق مستقل / دون اتصال بالإنترنت</span>
-            <button
+            <button type="button"
               id="mob_install_pwa_btn"
               onClick={() => {
                 setMobileMenuOpen(false);
@@ -1259,7 +1258,7 @@ export default function App() {
           {/* Mobile Day/Night Theme Switcher (الليل والنهار) */}
           <div className="border-t border-slate-100 dark:border-slate-800/80 pt-4 flex flex-col gap-2">
             <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 block mb-1">سمة الألوان والإنارة</span>
-            <button
+            <button type="button"
               id="mob_day_night_switcher"
               onClick={() => setDarkMode(!darkMode)}
               className="flex items-center justify-between p-3.5 rounded-xl text-xs font-black bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700/60 text-slate-700 dark:text-slate-200 cursor-pointer transition-colors duration-150"
@@ -1414,7 +1413,7 @@ export default function App() {
                 <h3 className="text-sm font-black text-slate-900 dark:text-white">تثبيت نظام أنس المحاسبي على سطح المكتب</h3>
                 <p className="text-[10px] text-slate-400">التشغيل الفوري والمستقل دون حاجة لإنترنت</p>
               </div>
-              <button 
+              <button type="button"
                 onClick={() => setShowInstallHelp(false)}
                 className="mr-auto p-1 text-slate-400 hover:text-slate-600 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
               >
@@ -1489,7 +1488,7 @@ export default function App() {
 
       {/* Back to Top Button (زر العودة للأعلى) */}
       {showBackToTop && (
-        <button
+        <button type="button"
           onClick={handleScrollToTop}
           className="fixed bottom-6 left-6 z-50 p-4 rounded-full shadow-2xl transition-all duration-300 bg-slate-900 dark:bg-slate-800 text-white hover:scale-110 cursor-pointer border border-slate-700/50 flex items-center justify-center select-none animate-in fade-in zoom-in duration-200 no-print"
           title="العودة لأعلى الصفحة"
@@ -1503,7 +1502,7 @@ export default function App() {
 
       {/* Quick Credit/Debit Shortcut Buttons next to Calculator */}
       <div className="fixed bottom-6 right-24 sm:right-28 z-40 flex items-center gap-2 sm:gap-3 no-print" dir="rtl">
-        <button
+        <button type="button"
           onClick={() => handleOpenQuickEntryWithType('debit')}
           className="p-4 rounded-full shadow-2xl transition-all duration-300 flex items-center justify-center cursor-pointer select-none group border bg-red-600 hover:bg-red-700 text-white border-red-700 scale-100 hover:scale-110"
           title="اسحب مبلغ دين"
@@ -1513,7 +1512,7 @@ export default function App() {
             اسحب مبلغ دين
           </span>
         </button>
-        <button
+        <button type="button"
           onClick={() => handleOpenQuickEntryWithType('credit')}
           className="p-4 rounded-full shadow-2xl transition-all duration-300 flex items-center justify-center cursor-pointer select-none group border bg-emerald-600 hover:bg-emerald-700 text-white border-emerald-700 scale-100 hover:scale-110"
           title="تسديد مبلغ"
@@ -1527,7 +1526,7 @@ export default function App() {
 
       {/* Quick Entry Floating Action Button */}
       {userRole !== 'Salesperson' && (
-        <button
+        <button type="button"
           onClick={() => {
             setQuickEntryDefaultType(undefined);
             setIsQuickEntryOpen(true);
@@ -1573,7 +1572,7 @@ export default function App() {
                   <p className="text-xs text-slate-500">{authUser.email}</p>
                 </div>
               </div>
-              <button 
+              <button type="button"
                 onClick={() => setIsSyncModalOpen(false)}
                 className="text-slate-400 hover:text-slate-600 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 p-2 rounded-xl transition-colors"
               >
@@ -1582,7 +1581,7 @@ export default function App() {
             </div>
 
             <div className="pt-4 border-t border-slate-100 dark:border-slate-800">
-               <button
+               <button type="button"
                   onClick={() => {
                     setIsSyncModalOpen(false);
                     logout().catch(err => console.error('[Auth] Logout error:', err));

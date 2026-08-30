@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Cloud, Download, Trash2, RefreshCw, HardDrive, ShieldCheck, AlertCircle, Clock, Save, FileDown } from 'lucide-react';
-import { BackupService, BackupMetadata } from '../backupService';
-import { Database } from '../utils';
+import { BackupService, BackupMetadata } from '../backupService.ts';
+import { Database } from '../utils.ts';
 
 interface BackupCenterTabProps {
   db: Database;
@@ -164,7 +164,7 @@ export const BackupCenterTab: React.FC<BackupCenterTabProps> = ({ db, authUser, 
           <Cloud className="text-emerald-500" />
           نظام النسخ الاحتياطي السحابي
         </h2>
-        <button
+        <button type="button"
           onClick={handleBackupNow}
           disabled={loading}
           className="flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl transition-colors disabled:opacity-50"
@@ -248,10 +248,10 @@ export const BackupCenterTab: React.FC<BackupCenterTabProps> = ({ db, authUser, 
           <div className="flex items-center justify-between">
             <h3 className="font-bold text-lg text-slate-800 dark:text-white">سجل النسخ الاحتياطية</h3>
             <div className="flex items-center gap-2">
-              <button onClick={handleDownloadLog} className="text-slate-500 hover:text-blue-600" title="تحميل السجل">
+              <button type="button" onClick={handleDownloadLog} className="text-slate-500 hover:text-blue-600" title="تحميل السجل">
                 <FileDown size={18} />
               </button>
-              <button onClick={fetchBackups} className="text-slate-500 hover:text-emerald-600">
+              <button type="button" onClick={fetchBackups} className="text-slate-500 hover:text-emerald-600">
                 <RefreshCw size={18} className={loading ? 'animate-spin' : ''} />
               </button>
             </div>
@@ -297,14 +297,14 @@ export const BackupCenterTab: React.FC<BackupCenterTabProps> = ({ db, authUser, 
                         </td>
                         <td className="p-4">
                           <div className="flex items-center justify-center gap-2">
-                            <button
+                            <button type="button"
                               onClick={() => handleRestore(backup.driveId)}
                               className="p-2 text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 rounded-lg transition-colors"
                               title="استعادة"
                             >
                               <Download size={18} />
                             </button>
-                            <button
+                            <button type="button"
                               onClick={() => handleDelete(backup.driveId)}
                               className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
                               title="حذف"

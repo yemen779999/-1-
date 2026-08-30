@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { Database } from '../utils';
+import { Database } from '../utils.ts';
 import { 
   TrendingUp, 
   Users, 
@@ -114,7 +114,7 @@ export default function DashboardTab({ db, onNavigateToTab, onSelectAccount, onO
       {/* Quick Actions Row */}
       <div className="flex gap-4 items-center">
         {onOpenQuickEntry && (
-          <button
+          <button type="button"
             onClick={onOpenQuickEntry}
             className="flex-1 sm:flex-none flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-4 rounded-2xl font-bold shadow-md hover:shadow-lg transition-all"
           >
@@ -135,7 +135,7 @@ export default function DashboardTab({ db, onNavigateToTab, onSelectAccount, onO
                 <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100">منحنى اتجاهات مبيعات اليومية</h3>
                 <p className="text-xs text-slate-400 dark:text-slate-500">مخطط بياني لتطور المبيعات اليومية وإيرادات الذمم</p>
               </div>
-              <button 
+              <button type="button"
                 id="goto_ledger_btn"
                 onClick={() => onNavigateToTab('ledger')}
                 className="text-xs flex items-center gap-1 text-blue-600 hover:text-blue-700 dark:text-blue-400 hover:underline font-medium"
@@ -215,7 +215,7 @@ export default function DashboardTab({ db, onNavigateToTab, onSelectAccount, onO
                   <p className="text-[11px] text-slate-400 dark:text-slate-500">إجمالي الديون والذمم الدائنة المستحقة للموردين</p>
                 </div>
               </div>
-              <button 
+              <button type="button"
                 id="goto_suppliers_tab_btn"
                 onClick={() => onNavigateToTab('accounts')}
                 className="text-xs text-blue-600 dark:text-blue-400 font-bold hover:text-blue-700 transition-colors cursor-pointer interactive-tap px-2.5 py-1 bg-blue-50/50 hover:bg-blue-50 dark:bg-slate-800 dark:hover:bg-slate-750 rounded-lg"
@@ -279,7 +279,7 @@ export default function DashboardTab({ db, onNavigateToTab, onSelectAccount, onO
                   <p className="text-[11px] text-slate-400 dark:text-slate-500">إجمالي مستحقاتنا على المشترين والذمم المدينة لتسديدها</p>
                 </div>
               </div>
-              <button 
+              <button type="button"
                 id="goto_buyers_tab_btn"
                 onClick={() => onNavigateToTab('accounts')}
                 className="text-xs text-blue-600 dark:text-blue-400 font-bold hover:text-blue-700 transition-colors cursor-pointer interactive-tap px-2.5 py-1 bg-blue-50/50 hover:bg-blue-50 dark:bg-slate-800 dark:hover:bg-slate-750 rounded-lg"

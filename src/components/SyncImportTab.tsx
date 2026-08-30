@@ -22,9 +22,9 @@ import {
   LogOut,
   LogIn
 } from "lucide-react";
-import { Database } from "../utils";
-import { Account, Transaction, DailyLedgerEntry } from "../types";
-import { auth, googleSignIn, logout, getAccessToken, firestore, handleFirestoreError, OperationType } from "../auth";
+import { Database } from "../utils.ts";
+import { Account, Transaction, DailyLedgerEntry } from "../types.ts";
+import { auth, googleSignIn, logout, getAccessToken, firestore, handleFirestoreError, OperationType } from "../auth.ts";
 import { onAuthStateChanged, User } from "firebase/auth";
 import { doc, setDoc, onSnapshot, getDoc } from "firebase/firestore";
 import * as XLSX from "xlsx";
@@ -891,7 +891,7 @@ export default function SyncImportTab({ db, onDatabaseUpdate, role: _role }: Syn
             <span className="font-bold block text-sm">تنبيه بالخطأ</span>
             <span className="text-xs">{errorMessage}</span>
           </div>
-          <button onClick={() => setErrorMessage(null)} className="mr-auto text-rose-500 hover:text-rose-700 font-bold text-xs">✕</button>
+          <button type="button" onClick={() => setErrorMessage(null)} className="mr-auto text-rose-500 hover:text-rose-700 font-bold text-xs">✕</button>
         </div>
       )}
 
@@ -902,7 +902,7 @@ export default function SyncImportTab({ db, onDatabaseUpdate, role: _role }: Syn
             <span className="font-bold block text-sm">عملية ناجحة</span>
             <span className="text-xs">{successMessage}</span>
           </div>
-          <button onClick={() => setSuccessMessage(null)} className="mr-auto text-emerald-500 hover:text-emerald-700 font-bold text-xs">✕</button>
+          <button type="button" onClick={() => setSuccessMessage(null)} className="mr-auto text-emerald-500 hover:text-emerald-700 font-bold text-xs">✕</button>
         </div>
       )}
 
@@ -975,14 +975,14 @@ export default function SyncImportTab({ db, onDatabaseUpdate, role: _role }: Syn
                   <span className="text-xs font-black text-slate-800 dark:text-slate-100">معاينة البيانات المستخرجة من جدول Excel</span>
                 </div>
                 <div className="flex gap-2">
-                  <button 
+                  <button type="button"
                     onClick={() => setExcelPreview(null)}
                     className="p-2 text-slate-400 hover:text-red-500 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl transition-colors cursor-pointer"
                     title="حذف البيانات المعروضة"
                   >
                     <Trash2 size={14} />
                   </button>
-                  <button 
+                  <button type="button"
                     onClick={saveImportedData}
                     className="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-black rounded-lg transition-colors cursor-pointer"
                   >
@@ -1079,14 +1079,14 @@ export default function SyncImportTab({ db, onDatabaseUpdate, role: _role }: Syn
                   <span className="text-xs font-black text-slate-800 dark:text-slate-100">تحليل الذكاء الاصطناعي للفاتورة/الصورة (AI OCR Extract)</span>
                 </div>
                 <div className="flex gap-2">
-                  <button 
+                  <button type="button"
                     onClick={() => setAiPreview(null)}
                     className="p-2 text-slate-400 hover:text-red-500 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl transition-colors cursor-pointer"
                     title="حذف البيانات"
                   >
                     <Trash2 size={14} />
                   </button>
-                  <button 
+                  <button type="button"
                     onClick={saveImportedData}
                     className="px-3.5 py-1.5 bg-indigo-650 hover:bg-indigo-700 text-white text-[11px] font-black rounded-lg transition-colors cursor-pointer"
                   >
@@ -1231,7 +1231,7 @@ export default function SyncImportTab({ db, onDatabaseUpdate, role: _role }: Syn
                     <span className="text-xs font-black text-slate-800 dark:text-slate-100 block">{user.displayName || "مستعمل نظام ANAS"}</span>
                     <span className="text-[10px] text-slate-400 block font-mono">{user.email}</span>
                   </div>
-                  <button 
+                  <button type="button"
                     onClick={handleLogout}
                     className="p-2 text-slate-400 hover:text-rose-500 transition-colors rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
                     title="تسجيل الخروج"
