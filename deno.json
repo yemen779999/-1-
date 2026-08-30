@@ -11,7 +11,8 @@
         "no-window",
         "no-window-prefix",
         "jsx-button-has-type",
-        "jsx-curly-braces"
+        "jsx-curly-braces",
+        "no-node-globals"
       ]
     }
   }
