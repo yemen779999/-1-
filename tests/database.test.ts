@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { Database } from '../src/utils.js';
+import { Database } from '../src/utils.ts';
 
 // Mock localStorage for Node environment if missing
 if (typeof globalThis.localStorage === 'undefined') {
