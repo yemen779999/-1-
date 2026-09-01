@@ -1,4 +1,4 @@
-import { test, beforeEach } from 'node:test';
+import { test } from 'node:test';
 import assert from 'node:assert';
 import { Database } from '../src/utils.ts';
 
@@ -13,20 +13,20 @@ if (typeof globalThis.localStorage === 'undefined') {
   };
 }
 
-let db: Database;
-
-beforeEach(() => {
+function createFreshDb(): Database {
   localStorage.clear();
-  db = new Database();
-});
+  return new Database();
+}
 
 test('should initialize with default seed data', () => {
+  const db = createFreshDb();
   assert.ok(db.accounts.length > 0, 'Accounts should not be empty');
   assert.ok(db.transactions.length > 0, 'Transactions should not be empty');
   assert.ok(db.dailyEntries.length > 0, 'Daily entries should not be empty');
 });
 
 test('should create new buyer and supplier accounts correctly', () => {
+  const db = createFreshDb();
   const newBuyer = db.addAccount({
     name: 'عميل جديد للاختبار',
     phone: '+967700000001',
@@ -55,6 +55,7 @@ test('should create new buyer and supplier accounts correctly', () => {
 });
 
 test('should process debit and credit transactions and update running balance', () => {
+  const db = createFreshDb();
   const acc = db.addAccount({
     name: 'حساب تجربة العمليات',
     phone: '+967700000003',
@@ -91,6 +92,7 @@ test('should process debit and credit transactions and update running balance', 
 });
 
 test('should handle relational sync between daily entries and account ledger', () => {
+  const db = createFreshDb();
   const buyerAcc = db.addAccount({
     name: 'عميل القيد اليومي',
     phone: '+967700000004',
@@ -126,6 +128,7 @@ test('should handle relational sync between daily entries and account ledger', (
 });
 
 test('should support multi-currency conversion accurately', () => {
+  const db = createFreshDb();
   // 1 USD = 250 YER by default rate
   const convUSD = db.convertCurrency(100, 'USD', 'YER');
   assert.ok(convUSD > 0);
@@ -136,6 +139,7 @@ test('should support multi-currency conversion accurately', () => {
 });
 
 test('should soft delete and record deleted state for recycle bin recovery', () => {
+  const db = createFreshDb();
   const acc = db.addAccount({
     name: 'حساب محذوف للاختبار',
     phone: '+967700000005',
