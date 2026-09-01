@@ -271,7 +271,7 @@ export default function LedgerTab({ db, onDatabaseUpdate, role }: LedgerTabProps
   };
 
   const handlePrint = () => {
-    window.print();
+    globalThis.print();
   };
 
   // Pre-fill next missing day in draft to help user

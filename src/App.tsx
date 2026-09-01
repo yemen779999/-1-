@@ -136,12 +136,12 @@ export default function App() {
       }
     };
 
-    window.addEventListener('error', handleError);
-    window.addEventListener('unhandledrejection', handlePromiseRejection);
+    globalThis.addEventListener('error', handleError);
+    globalThis.addEventListener('unhandledrejection', handlePromiseRejection);
 
     return () => {
-      window.removeEventListener('error', handleError);
-      window.removeEventListener('unhandledrejection', handlePromiseRejection);
+      globalThis.removeEventListener('error', handleError);
+      globalThis.removeEventListener('unhandledrejection', handlePromiseRejection);
     };
   }, []);
 
@@ -158,12 +158,12 @@ export default function App() {
     const handleOnline = () => setIsOnline(true);
     const handleOffline = () => setIsOnline(false);
 
-    window.addEventListener('online', handleOnline);
-    window.addEventListener('offline', handleOffline);
+    globalThis.addEventListener('online', handleOnline);
+    globalThis.addEventListener('offline', handleOffline);
 
     return () => {
-      window.removeEventListener('online', handleOnline);
-      window.removeEventListener('offline', handleOffline);
+      globalThis.removeEventListener('online', handleOnline);
+      globalThis.removeEventListener('offline', handleOffline);
     };
   }, []);
 
@@ -191,18 +191,18 @@ export default function App() {
 
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 300) {
+      if (globalThis.scrollY > 300) {
         setShowBackToTop(true);
       } else {
         setShowBackToTop(false);
       }
     };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    globalThis.addEventListener('scroll', handleScroll);
+    return () => globalThis.removeEventListener('scroll', handleScroll);
   }, []);
 
   const handleScrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    globalThis.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   // Global Keyboard Shortcuts (اختصارات لوحة المفاتيح)
@@ -228,8 +228,8 @@ export default function App() {
       }
     };
 
-    window.addEventListener('keydown', handleGlobalShortcuts);
-    return () => window.removeEventListener('keydown', handleGlobalShortcuts);
+    globalThis.addEventListener('keydown', handleGlobalShortcuts);
+    return () => globalThis.removeEventListener('keydown', handleGlobalShortcuts);
   }, []);
 
   // PWA (Progressive Web App) offline installation states
@@ -244,21 +244,21 @@ export default function App() {
       setShowInstallBadge(true);
     };
 
-    window.addEventListener('beforeinstallprompt', handleBeforeInstall);
+    globalThis.addEventListener('beforeinstallprompt', handleBeforeInstall);
 
-    window.addEventListener('appinstalled', () => {
+    globalThis.addEventListener('appinstalled', () => {
       console.log('[PWA] App installed successfully');
       setDeferredPrompt(null);
       setShowInstallBadge(false);
     });
 
     // Check if running in standalone window
-    if (window.matchMedia('(display-mode: standalone)').matches) {
+    if (globalThis.matchMedia('(display-mode: standalone)').matches) {
       setShowInstallBadge(false);
     }
 
     return () => {
-      window.removeEventListener('beforeinstallprompt', handleBeforeInstall);
+      globalThis.removeEventListener('beforeinstallprompt', handleBeforeInstall);
     };
   }, []);
 
@@ -352,7 +352,7 @@ export default function App() {
       performAutoBackup().catch(err => console.error('[Auto Backup] Online handler error:', err));
       initializeCloudDb().catch(err => console.error('[Firestore Sync] Online handler error:', err));
     };
-    window.addEventListener('online', handleOnline);
+    globalThis.addEventListener('online', handleOnline);
 
     setCloudSyncStatus(navigator.onLine ? 'syncing' : 'success');
     const docRef = doc(firestore, "user_databases", authUser.uid);
@@ -431,7 +431,7 @@ export default function App() {
 
     return () => {
       unsubscribe();
-      window.removeEventListener('online', handleOnline);
+      globalThis.removeEventListener('online', handleOnline);
     };
   }, [authUser, db]);
 
