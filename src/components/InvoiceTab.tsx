@@ -445,7 +445,7 @@ export default function InvoiceTab({ db, onDatabaseUpdate, role }: InvoiceTabPro
   };
 
   const handlePrint = () => {
-    window.print();
+    globalThis.print();
   };
 
   const handleExportExcel = () => {
@@ -839,7 +839,7 @@ export default function InvoiceTab({ db, onDatabaseUpdate, role }: InvoiceTabPro
                         <button
                           type="button"
                           onClick={() => {
-                            const newWindow = window.open();
+                            const newWindow = globalThis.open();
                             if (newWindow) {
                               newWindow.document.write(`<img src="${attachmentData}" style="max-width:100%; height:auto;" />`);
                             }
@@ -1533,7 +1533,7 @@ export default function InvoiceTab({ db, onDatabaseUpdate, role }: InvoiceTabPro
                     setActiveSubTab('create');
                     setSelectedPreviewInvoice(null);
                     setTimeout(() => {
-                      window.print();
+                      globalThis.print();
                     }, 400);
                   }}
                   className="flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold text-xs transition-colors cursor-pointer shadow-md"
@@ -1600,7 +1600,7 @@ export default function InvoiceTab({ db, onDatabaseUpdate, role }: InvoiceTabPro
 
               {/* Start System Print Dialog */}
               <button
-                onClick={() => window.print()}
+                onClick={() => globalThis.print()}
                 className="flex items-center justify-center gap-2 px-4.5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold text-xs transition-colors shadow-md cursor-pointer"
               >
                 <Printer size={15} />

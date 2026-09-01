@@ -243,7 +243,7 @@ export default function ReportsTab({ db }: ReportsTabProps) {
   }, [agingReport]);
 
   const handlePrint = () => {
-    window.print();
+    globalThis.print();
   };
 
   return (
