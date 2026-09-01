@@ -1279,7 +1279,6 @@ export default function App() {
         </div>
       )}
 
-  // Scrollable Content View
       <main className="flex-1 w-full overflow-y-auto p-4 sm:p-6 lg:p-8 pb-24" id="smartacc_main_view">
         
         {/* Active view Renderer switcher */}
