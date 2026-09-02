@@ -42,7 +42,7 @@ export default function FloatingCalculator() {
         const rounded = Math.round(result * 10000) / 10000;
         setDisplayValue(rounded.toString());
       }
-    } catch (e) {
+    } catch (_e) {
       setDisplayValue('خطأ');
     }
   };
@@ -78,8 +78,8 @@ export default function FloatingCalculator() {
       }
     };
 
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    globalThis.addEventListener('keydown', handleKeyDown);
+    return () => globalThis.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, displayValue]);
 
   return (

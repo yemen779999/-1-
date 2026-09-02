@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Cloud, Download, Trash2, RefreshCw, HardDrive, ShieldCheck, AlertCircle, Clock, Save, FileDown } from 'lucide-react';
-import { BackupService, BackupMetadata } from '../backupService';
-import { Database } from '../utils';
+import { BackupService, BackupMetadata } from '../backupService.ts';
+import { Database } from '../utils.ts';
 
 interface BackupCenterTabProps {
   db: Database;

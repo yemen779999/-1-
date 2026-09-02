@@ -21,8 +21,8 @@ import {
   User as UserIcon,
   BellRing
 } from "lucide-react";
-import { Database } from "../utils";
-import { Account, DailyLedgerEntry } from "../types";
+import { Database } from "../utils.ts";
+import { Account, DailyLedgerEntry } from "../types.ts";
 
 function SalesPatternAnalyzer({ db }: { db: Database }) {
   const recommendations = useMemo(() => {

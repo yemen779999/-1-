@@ -5,25 +5,26 @@
 
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import CryptoJS from 'crypto-js';
-import { Database } from './utils';
-import DashboardTab from './components/DashboardTab';
-import AccountsTab from './components/AccountsTab';
-import LedgerTab from './components/LedgerTab';
-import GatewayTab from './components/GatewayTab';
-import ReportsTab from './components/ReportsTab';
-import SyncImportTab from './components/SyncImportTab';
-import AIControlDashboard from './components/AIControlDashboard';
-import InvoiceTab from './components/InvoiceTab';
-import RecycleBinTab from './components/RecycleBinTab';
-import ActivityLogTab from './components/ActivityLogTab';
-import { BackupCenterTab } from './components/BackupCenterTab';
-import { BackupService } from './backupService';
-import { UserRole } from './types';
-import { initAuth, auth, googleSignIn, logout, firestore, handleFirestoreError, OperationType } from './auth';
+import { Database } from './utils.ts';
+import DashboardTab from './components/DashboardTab.tsx';
+import AccountsTab from './components/AccountsTab.tsx';
+import LedgerTab from './components/LedgerTab.tsx';
+import GatewayTab from './components/GatewayTab.tsx';
+import ReportsTab from './components/ReportsTab.tsx';
+import SyncImportTab from './components/SyncImportTab.tsx';
+import AIControlDashboard from './components/AIControlDashboard.tsx';
+import InvoiceTab from './components/InvoiceTab.tsx';
+import RecycleBinTab from './components/RecycleBinTab.tsx';
+import ActivityLogTab from './components/ActivityLogTab.tsx';
+import { BackupCenterTab } from './components/BackupCenterTab.tsx';
+import { BackupService } from './backupService.ts';
+import { UserRole } from './types.ts';
+import { auth, googleSignIn, logout, firestore, handleFirestoreError, OperationType } from './auth.ts';
 import { doc, setDoc, onSnapshot, getDoc } from 'firebase/firestore';
-import FloatingCalculator from './components/FloatingCalculator';
-import QuickEntryModal from './components/QuickEntryModal';
-import ErrorBoundary from './components/ErrorBoundary';
+import type { User } from 'firebase/auth';
+import FloatingCalculator from './components/FloatingCalculator.tsx';
+import QuickEntryModal from './components/QuickEntryModal.tsx';
+import ErrorBoundary from './components/ErrorBoundary.tsx';
 import { 
   Building2, 
   LayoutDashboard, 
@@ -32,16 +33,13 @@ import {
   Radio, 
   Menu, 
   X, 
-  Printer, 
   Layers,
   ArrowLeftRight,
   BarChart3,
-  ShieldCheck,
   Lock,
   Briefcase,
   Coins,
   Activity,
-  Palette,
   Sun,
   Moon,
   Wallet,
@@ -61,7 +59,6 @@ import {
   ArrowUp,
   ArrowDown,
   Zap,
-  Plus,
   Trash2,
   LogIn,
   LogOut,
@@ -101,7 +98,7 @@ export default function App() {
   };
 
   // Auth User
-  const [authUser, setAuthUser] = useState<any>(null);
+  const [authUser, setAuthUser] = useState<User | null>(null);
   const [cloudSyncStatus, setCloudSyncStatus] = useState<'idle' | 'syncing' | 'success' | 'error'>('idle');
   const isImportingRef = useRef(false);
   
@@ -109,7 +106,7 @@ export default function App() {
   const [isSyncModalOpen, setIsSyncModalOpen] = useState(false);
 
   // User role state
-  const [userRole, setUserRole] = useState<UserRole>('Admin');
+  const [userRole, _setUserRole] = useState<UserRole>('Admin');
 
   // Active view tab state (default: dashboard)
   const [activeTab, setActiveTab] = useState<string>('dashboard');
@@ -158,12 +155,12 @@ export default function App() {
     const handleOnline = () => setIsOnline(true);
     const handleOffline = () => setIsOnline(false);
 
-    window.addEventListener('online', handleOnline);
-    window.addEventListener('offline', handleOffline);
+    globalThis.addEventListener('online', handleOnline);
+    globalThis.addEventListener('offline', handleOffline);
 
     return () => {
-      window.removeEventListener('online', handleOnline);
-      window.removeEventListener('offline', handleOffline);
+      globalThis.removeEventListener('online', handleOnline);
+      globalThis.removeEventListener('offline', handleOffline);
     };
   }, []);
 
@@ -191,18 +188,18 @@ export default function App() {
 
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 300) {
+      if (globalThis.scrollY > 300) {
         setShowBackToTop(true);
       } else {
         setShowBackToTop(false);
       }
     };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    globalThis.addEventListener('scroll', handleScroll);
+    return () => globalThis.removeEventListener('scroll', handleScroll);
   }, []);
 
   const handleScrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    globalThis.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   // Global Keyboard Shortcuts (اختصارات لوحة المفاتيح)
@@ -228,13 +225,13 @@ export default function App() {
       }
     };
 
-    window.addEventListener('keydown', handleGlobalShortcuts);
-    return () => window.removeEventListener('keydown', handleGlobalShortcuts);
+    globalThis.addEventListener('keydown', handleGlobalShortcuts);
+    return () => globalThis.removeEventListener('keydown', handleGlobalShortcuts);
   }, []);
 
   // PWA (Progressive Web App) offline installation states
-  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
-  const [showInstallBadge, setShowInstallBadge] = useState(false);
+  const [deferredPrompt, setDeferredPrompt] = useState<unknown>(null);
+  const [_showInstallBadge, setShowInstallBadge] = useState(false);
   const [showInstallHelp, setShowInstallHelp] = useState(false);
 
   useEffect(() => {
@@ -244,29 +241,29 @@ export default function App() {
       setShowInstallBadge(true);
     };
 
-    window.addEventListener('beforeinstallprompt', handleBeforeInstall);
+    globalThis.addEventListener('beforeinstallprompt', handleBeforeInstall);
 
-    window.addEventListener('appinstalled', () => {
+    globalThis.addEventListener('appinstalled', () => {
       console.log('[PWA] App installed successfully');
       setDeferredPrompt(null);
       setShowInstallBadge(false);
     });
 
     // Check if running in standalone window
-    if (window.matchMedia('(display-mode: standalone)').matches) {
+    if (globalThis.matchMedia('(display-mode: standalone)').matches) {
       setShowInstallBadge(false);
     }
 
     return () => {
-      window.removeEventListener('beforeinstallprompt', handleBeforeInstall);
+      globalThis.removeEventListener('beforeinstallprompt', handleBeforeInstall);
     };
   }, []);
 
   const handleInstallApp = async () => {
     if (deferredPrompt) {
       try {
-        deferredPrompt.prompt();
-        const { outcome } = await deferredPrompt.userChoice;
+        (deferredPrompt as any).prompt();
+        const { outcome } = await (deferredPrompt as any).userChoice;
         console.log(`[PWA] Install choice outcome: ${outcome}`);
       } catch (e) {
         console.error('[PWA] Installation error:', e);
@@ -352,7 +349,7 @@ export default function App() {
       performAutoBackup().catch(err => console.error('[Auto Backup] Online handler error:', err));
       initializeCloudDb().catch(err => console.error('[Firestore Sync] Online handler error:', err));
     };
-    window.addEventListener('online', handleOnline);
+    globalThis.addEventListener('online', handleOnline);
 
     setCloudSyncStatus(navigator.onLine ? 'syncing' : 'success');
     const docRef = doc(firestore, "user_databases", authUser.uid);
@@ -431,7 +428,7 @@ export default function App() {
 
     return () => {
       unsubscribe();
-      window.removeEventListener('online', handleOnline);
+      globalThis.removeEventListener('online', handleOnline);
     };
   }, [authUser, db]);
 
@@ -498,7 +495,7 @@ export default function App() {
     return 'bg-blue-600';
   }, [dbVersion, db.appAccentColor]);
 
-  const accentBorder = useMemo(() => {
+  const _accentBorder = useMemo(() => {
     const col = db.appAccentColor || 'blue';
     if (col === 'slate') return 'border-slate-300 dark:border-slate-800';
     if (col === 'indigo') return 'border-indigo-600/30';
@@ -540,7 +537,7 @@ export default function App() {
     return 'hover:text-blue-600';
   }, [dbVersion, db.appAccentColor]);
 
-  const accentText = useMemo(() => {
+  const _accentText = useMemo(() => {
     const col = db.appAccentColor || 'blue';
     if (col === 'slate') return 'text-slate-900 dark:text-slate-100';
     if (col === 'indigo') return 'text-indigo-600 dark:text-indigo-400';

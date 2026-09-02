@@ -4,12 +4,11 @@
  */
 
 import React, { useState, useMemo } from 'react';
-import { Database } from '../utils';
-import { DailyLedgerEntry, UserRole } from '../types';
-import { SUPPORTED_CURRENCIES, getCurrencyInfo, formatCurrency } from '../currencyUtils';
+import { Database } from '../utils.ts';
+import { DailyLedgerEntry, UserRole } from '../types.ts';
+import { SUPPORTED_CURRENCIES } from '../currencyUtils.ts';
 import { 
   FileSpreadsheet, 
-  Plus, 
   Trash2, 
   Printer, 
   Edit2, 
@@ -17,8 +16,6 @@ import {
   X, 
   Link2, 
   Sparkles, 
-  ArrowRightLeft, 
-  Info,
   DollarSign,
   TrendingUp,
   Percent,
@@ -64,7 +61,7 @@ export default function LedgerTab({ db, onDatabaseUpdate, role }: LedgerTabProps
           total: parsed.total ?? true
         };
       }
-    } catch (e) {
+    } catch (_e) {
       // Ignored
     }
     return {
@@ -85,7 +82,9 @@ export default function LedgerTab({ db, onDatabaseUpdate, role }: LedgerTabProps
     setVisibleColumns(updated);
     try {
       localStorage.setItem('smartacc_ledger_visible_cols', JSON.stringify(updated));
-    } catch (e) {}
+    } catch (_e) {
+      // Ignored
+    }
   };
   
   // Create / Edit temporary inline input state
@@ -271,7 +270,7 @@ export default function LedgerTab({ db, onDatabaseUpdate, role }: LedgerTabProps
   };
 
   const handlePrint = () => {
-    window.print();
+    globalThis.print();
   };
 
   // Pre-fill next missing day in draft to help user

@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { Database } from '../utils';
+import { Database } from '../utils.ts';
 import { 
   TrendingUp, 
   Users, 

@@ -5,12 +5,12 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
 import * as XLSX from 'xlsx';
-import { Database } from '../utils';
-import { Account, Transaction, AccountType, UserRole } from '../types';
-import { SUPPORTED_CURRENCIES, getCurrencyInfo, formatCurrency } from '../currencyUtils';
+import { Database, getSafeImageUrl } from '../utils.ts';
+import { Account, Transaction, AccountType, UserRole } from '../types.ts';
+import { SUPPORTED_CURRENCIES, getCurrencyInfo } from '../currencyUtils.ts';
 import { 
   Users, 
-  Plus, 
+  Plus,
   Search, 
   Calendar, 
   MapPin, 
@@ -18,15 +18,10 @@ import {
   Trash2, 
   Printer, 
   ArrowLeftRight, 
-  ArrowUpLeft, 
-  ArrowDownRight,
   ArrowUp,
   ArrowDown,
   UserPlus,
-  ArrowRight,
   Filter,
-  DollarSign,
-  Send,
   Bell,
   Edit,
   Lock,
@@ -139,10 +134,11 @@ interface QatLogoProps {
 }
 
 const QatLogo = ({ colorScheme = 'emerald', customLogoUrl }: QatLogoProps) => {
-  if (customLogoUrl) {
+  const safeUrl = getSafeImageUrl(customLogoUrl);
+  if (safeUrl) {
     return (
       <img 
-        src={customLogoUrl} 
+        src={safeUrl}
         alt="Logo" 
         className="w-16 h-16 object-contain rounded-xl print:max-h-16" 
         referrerPolicy="no-referrer"
@@ -181,14 +177,14 @@ const QatLogo = ({ colorScheme = 'emerald', customLogoUrl }: QatLogoProps) => {
   );
 };
 
-const getArabicDayName = (dateString: string): string => {
+const _getArabicDayName = (dateString: string): string => {
   if (!dateString) return '';
   try {
     const date = new Date(dateString);
     if (isNaN(date.getTime())) return '';
     const days = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
     return days[date.getDay()];
-  } catch (e) {
+  } catch (_e) {
     return '';
   }
 };
@@ -1307,7 +1303,7 @@ export default function AccountsTab({
 
             {/* Dynamic Custom PDF Print Layout */}
             {isCompactPrint && (
-              <style dangerouslySetInnerHTML={{__html: `
+              <style>{`
                 @media print {
                   @page {
                     size: auto;
@@ -1333,7 +1329,7 @@ export default function AccountsTab({
                     display: table-footer-group;
                   }
                 }
-              `}} />
+              `}</style>
             )}
             
             <div className="hidden print-only text-right space-y-4 border-b pb-6 mb-4 relative overflow-hidden" style={{ direction: 'rtl' }}>

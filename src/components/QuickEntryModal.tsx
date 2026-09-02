@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, Plus, FileText, CheckCircle2, Coins } from 'lucide-react';
-import type { Database } from '../utils';
-import { SUPPORTED_CURRENCIES, getCurrencyInfo } from '../currencyUtils';
+import type { Database } from '../utils.ts';
+import { SUPPORTED_CURRENCIES, getCurrencyInfo } from '../currencyUtils.ts';
 
 interface QuickEntryModalProps {
   db: Database;
