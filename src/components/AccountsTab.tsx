@@ -5,7 +5,7 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
 import * as XLSX from 'xlsx';
-import { Database } from '../utils.ts';
+import { Database, getSafeImageUrl } from '../utils.ts';
 import { Account, Transaction, AccountType, UserRole } from '../types.ts';
 import { SUPPORTED_CURRENCIES, getCurrencyInfo } from '../currencyUtils.ts';
 import { 
@@ -134,10 +134,11 @@ interface QatLogoProps {
 }
 
 const QatLogo = ({ colorScheme = 'emerald', customLogoUrl }: QatLogoProps) => {
-  if (customLogoUrl) {
+  const safeUrl = getSafeImageUrl(customLogoUrl);
+  if (safeUrl) {
     return (
       <img 
-        src={customLogoUrl} 
+        src={safeUrl}
         alt="Logo" 
         className="w-16 h-16 object-contain rounded-xl print:max-h-16" 
         referrerPolicy="no-referrer"

@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useRef } from 'react';
 import * as XLSX from 'xlsx';
-import { Database } from '../utils.ts';
+import { Database, getSafeImageUrl } from '../utils.ts';
 import { UserRole } from '../types.ts';
 import { 
   Printer, 
@@ -45,10 +45,11 @@ interface QatLogoProps {
 }
 
 const QatLogo = ({ colorScheme = 'emerald', customLogoUrl }: QatLogoProps) => {
-  if (customLogoUrl) {
+  const safeUrl = getSafeImageUrl(customLogoUrl);
+  if (safeUrl) {
     return (
       <img 
-        src={customLogoUrl} 
+        src={safeUrl}
         alt="Logo" 
         className="w-16 h-16 object-contain rounded-xl print:max-h-16" 
         referrerPolicy="no-referrer"
@@ -817,9 +818,9 @@ export default function InvoiceTab({ db, onDatabaseUpdate, role }: InvoiceTabPro
                   {attachmentData ? (
                     <div className="w-full flex flex-col sm:flex-row items-center justify-between gap-4 bg-slate-100/80 dark:bg-slate-800/80 p-3 rounded-xl border border-slate-200/50 dark:border-slate-700/50">
                       <div className="flex items-center gap-3">
-                        {attachmentData.startsWith('data:image/') ? (
+                        {getSafeImageUrl(attachmentData).startsWith('data:image/') ? (
                           <div className="w-16 h-16 rounded-lg overflow-hidden border border-slate-300 bg-white flex items-center justify-center shrink-0">
-                            <img src={attachmentData} alt="Attached Preview" className="w-full h-full object-cover" />
+                            <img src={getSafeImageUrl(attachmentData)} alt="Attached Preview" className="w-full h-full object-cover" />
                           </div>
                         ) : (
                           <div className="w-16 h-16 rounded-lg bg-indigo-500/10 text-indigo-600 flex items-center justify-center shrink-0">
@@ -1151,11 +1152,11 @@ export default function InvoiceTab({ db, onDatabaseUpdate, role }: InvoiceTabPro
                 </div>
 
                 {/* Print Attachment if available */}
-                {attachmentData && attachmentData.startsWith('data:image/') && (
+                {getSafeImageUrl(attachmentData).startsWith('data:image/') && (
                   <div className="mt-8 break-before-page border-t-2 border-dashed border-slate-200 pt-6">
                     <h4 className="font-bold text-slate-800 mb-2 text-xs">📂 صورة الملف المرفق بالفاتورة:</h4>
                     <div className="border border-slate-300 rounded-xl p-1 bg-white flex justify-center">
-                      <img src={attachmentData} alt="Attached Document" className="max-h-[380px] object-contain" />
+                      <img src={getSafeImageUrl(attachmentData)} alt="Attached Document" className="max-h-[380px] object-contain" />
                     </div>
                   </div>
                 )}
@@ -1450,10 +1451,10 @@ export default function InvoiceTab({ db, onDatabaseUpdate, role }: InvoiceTabPro
                     المستند المرفق بهذه الفاتورة:
                   </h4>
                   
-                  {selectedPreviewInvoice.attachmentData.startsWith('data:image/') ? (
+                  {getSafeImageUrl(selectedPreviewInvoice.attachmentData).startsWith('data:image/') ? (
                     <div className="border border-slate-200 dark:border-slate-700/60 rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-950 p-2 max-w-lg mx-auto flex items-center justify-center shadow-xs">
                       <img 
-                        src={selectedPreviewInvoice.attachmentData} 
+                        src={getSafeImageUrl(selectedPreviewInvoice.attachmentData)}
                         alt="Attached Document" 
                         className="max-h-72 object-contain rounded-xl hover:scale-105 transition-transform duration-300"
                       />
@@ -1760,11 +1761,11 @@ export default function InvoiceTab({ db, onDatabaseUpdate, role }: InvoiceTabPro
                   </div>
 
                   {/* Print Attachment if available */}
-                  {attachmentData && attachmentData.startsWith('data:image/') && (
+                  {getSafeImageUrl(attachmentData).startsWith('data:image/') && (
                     <div className="mt-8 border-t-2 border-dashed border-slate-200 pt-6">
                       <h4 className="font-bold text-slate-800 mb-2 text-xs">📂 صورة الملف المرفق بالفاتورة:</h4>
                       <div className="border border-slate-300 rounded-xl p-1 bg-white flex justify-center">
-                        <img src={attachmentData} alt="Attached Document" className="max-h-[380px] object-contain" />
+                        <img src={getSafeImageUrl(attachmentData)} alt="Attached Document" className="max-h-[380px] object-contain" />
                       </div>
                     </div>
                   )}

@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { Database } from '../utils.ts';
+import { Database, getSafeImageUrl } from '../utils.ts';
 import { UserRole } from '../types.ts';
 import { initAuth, googleSignIn, logout } from '../auth.ts';
 import type { User } from 'firebase/auth';
@@ -781,10 +781,10 @@ export default function GatewayTab({ db, onDatabaseUpdate, role }: GatewayTabPro
                   <div className="flex flex-col md:flex-row gap-5 items-center">
                     {/* Preview / Upload dropzone */}
                     <div className="w-full md:w-1/3 flex flex-col items-center justify-center border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-2xl p-4 bg-white dark:bg-slate-950/40 text-center min-h-[140px] relative overflow-hidden group">
-                      {printCompanyLogo ? (
+                      {getSafeImageUrl(printCompanyLogo) ? (
                         <div className="flex flex-col items-center justify-center space-y-2">
                           <img 
-                            src={printCompanyLogo} 
+                            src={getSafeImageUrl(printCompanyLogo)}
                             alt="Logo preview" 
                             className="max-h-24 max-w-full object-contain rounded-lg"
                             referrerPolicy="no-referrer"

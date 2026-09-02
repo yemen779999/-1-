@@ -55,6 +55,18 @@ export function getArabicDayName(dateString: string): string {
   }
 }
 
+/**
+ * Sanitizes image URL to prevent XSS / malicious protocol execution.
+ */
+export function getSafeImageUrl(url: string | undefined | null): string {
+  if (!url) return '';
+  const trimmed = url.trim();
+  if (/^(?:https?:\/\/|data:image\/|blob:|\/)/i.test(trimmed)) {
+    return trimmed;
+  }
+  return '';
+}
+
 // Initial Accounts Seed
 const INITIAL_ACCOUNTS: Account[] = [
   {
