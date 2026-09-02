@@ -1,19 +1,11 @@
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { Database } from '../utils.ts';
 import { 
-  TrendingUp, 
-  TrendingDown, 
-  DollarSign, 
   BarChart3, 
   Clock, 
   Filter, 
   Printer, 
-  Download, 
-  Info,
-  ChevronRight,
-  RefreshCw,
-  Activity,
-  Award
+  Info
 } from 'lucide-react';
 
 interface ReportsTabProps {

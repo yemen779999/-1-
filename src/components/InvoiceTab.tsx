@@ -17,13 +17,9 @@ import {
   Download,
   Eye,
   Archive,
-  ShoppingCart,
-  DollarSign,
   AlertCircle,
   X,
   Search,
-  CheckCircle,
-  Clock,
   User,
   Paperclip,
   TrendingDown,
@@ -31,6 +27,7 @@ import {
   Image as ImageIcon,
   Palette
 } from 'lucide-react';
+import { InvoiceRecord } from '../types.ts';
 
 interface InvoiceItem {
   id: string;
@@ -257,7 +254,7 @@ export default function InvoiceTab({ db, onDatabaseUpdate, role }: InvoiceTabPro
   // Archive & Search states
   const [searchQuery, setSearchQuery] = useState('');
   const [archiveFilterType, setArchiveFilterType] = useState<'all' | 'sale' | 'purchase'>('all');
-  const [selectedPreviewInvoice, setSelectedPreviewInvoice] = useState<any | null>(null);
+  const [selectedPreviewInvoice, setSelectedPreviewInvoice] = useState<InvoiceRecord | null>(null);
 
   // Handle invoice type change (Sale vs Purchase)
   const handleInvoiceTypeChange = (type: 'sale' | 'purchase') => {
@@ -350,7 +347,7 @@ export default function InvoiceTab({ db, onDatabaseUpdate, role }: InvoiceTabPro
     }
   };
 
-  const handleItemChange = (id: string, field: keyof InvoiceItem, value: any) => {
+  const handleItemChange = (id: string, field: keyof InvoiceItem, value: unknown) => {
     setItems(items.map(item => item.id === id ? { ...item, [field]: value } : item));
   };
 
@@ -394,7 +391,7 @@ export default function InvoiceTab({ db, onDatabaseUpdate, role }: InvoiceTabPro
     const finalTotal = filteredItems.reduce((sum, item) => sum + ((Number(item.quantity) || 0) * (Number(item.unitPrice) || 0)) + (Number(item.additions) || 0), 0);
 
     // 1. Save Invoice Record
-    const newInvoice = db.addInvoice({
+    const _newInvoice = db.addInvoice({
       invoiceNumber,
       date: invoiceDate,
       accountId: selectedAccountId || '',
@@ -463,13 +460,13 @@ export default function InvoiceTab({ db, onDatabaseUpdate, role }: InvoiceTabPro
     }));
 
     // Add totals row
-    data.push({
+    (data as Record<string, unknown>[]).push({
       'م': 'الإجمالي الكلي',
       'البيان': '',
       'الكمية': '',
       'سعر الوحدة': '',
       'المجموع': totals.total
-    } as any);
+    });
 
     const ws = XLSX.utils.json_to_sheet(data);
     const wscols = [
@@ -507,7 +504,7 @@ export default function InvoiceTab({ db, onDatabaseUpdate, role }: InvoiceTabPro
     }).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   }, [db.invoices, searchQuery, archiveFilterType, db.accounts]);
 
-  const handleOpenPreview = (invoice: any) => {
+  const handleOpenPreview = (invoice: InvoiceRecord) => {
     setSelectedPreviewInvoice(invoice);
   };
 
@@ -672,7 +669,7 @@ export default function InvoiceTab({ db, onDatabaseUpdate, role }: InvoiceTabPro
                       <Palette size={14} className="absolute right-3 top-2.5 text-slate-400" />
                       <select
                         value={printThemeColor}
-                        onChange={(e) => setPrintThemeColor(e.target.value as any)}
+                        onChange={(e) => setPrintThemeColor(e.target.value as 'emerald' | 'indigo' | 'blue' | 'slate' | 'red' | 'amber' | 'teal')}
                         className="w-full text-xs bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg pr-9 pl-3 py-2 text-slate-800 dark:text-slate-100 font-bold outline-hidden appearance-none cursor-pointer"
                       >
                         <option value="emerald">أخضر زمردي (Emerald)</option>
@@ -839,7 +836,7 @@ export default function InvoiceTab({ db, onDatabaseUpdate, role }: InvoiceTabPro
                         <button
                           type="button"
                           onClick={() => {
-                            const newWindow = window.open();
+                            const newWindow = globalThis.open();
                             if (newWindow) {
                               newWindow.document.write(`<img src="${attachmentData}" style="max-width:100%; height:auto;" />`);
                             }
@@ -1033,7 +1030,7 @@ export default function InvoiceTab({ db, onDatabaseUpdate, role }: InvoiceTabPro
                   </div>
 
                   <div className="flex flex-col items-center justify-center text-center w-1/3">
-                    <QatLogo colorScheme={printThemeColor as any} customLogoUrl={db.printCompanyLogo} />
+                    <QatLogo colorScheme={printThemeColor as 'emerald' | 'indigo' | 'blue' | 'slate' | 'red' | 'amber' | 'teal'} customLogoUrl={db.printCompanyLogo} />
                     <h1 className={`text-xl font-black ${activeTheme.textDark} tracking-wide mt-1.5`}>
                       {printCompanyName || 'محلات أبو أنس لتجارة وتسويق القات'}
                     </h1>
@@ -1077,7 +1074,7 @@ export default function InvoiceTab({ db, onDatabaseUpdate, role }: InvoiceTabPro
                     </tr>
                   </thead>
                   <tbody>
-                    {items.map((item, index) => (
+                    {items.map((item, _index) => (
                       <tr key={item.id} className={`border-b ${activeTheme.borderMuted} even:bg-slate-50/50 hover:bg-slate-100/30`}>
                         {/* Day */}
                         <td className={`p-2.5 border-l ${activeTheme.borderMuted} text-center font-bold text-slate-700`}>
@@ -1412,7 +1409,7 @@ export default function InvoiceTab({ db, onDatabaseUpdate, role }: InvoiceTabPro
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-150/40 dark:divide-slate-800 text-xs font-bold text-slate-800 dark:text-slate-200">
-                    {selectedPreviewInvoice.items?.map((item: any) => (
+                    {selectedPreviewInvoice.items?.map((item) => (
                       <tr key={item.id} className="bg-white dark:bg-slate-900">
                         <td className="p-3 text-center">{item.day || '—'}</td>
                         <td className="p-3 text-center">{item.dateString || '—'}</td>
@@ -1642,7 +1639,7 @@ export default function InvoiceTab({ db, onDatabaseUpdate, role }: InvoiceTabPro
                     </div>
 
                     <div className="flex flex-col items-center justify-center text-center w-1/3">
-                      <QatLogo colorScheme={printThemeColor as any} customLogoUrl={db.printCompanyLogo} />
+                      <QatLogo colorScheme={printThemeColor as 'emerald' | 'indigo' | 'blue' | 'slate' | 'red' | 'amber' | 'teal'} customLogoUrl={db.printCompanyLogo} />
                       <h1 className={`text-xl font-black ${activeTheme.textDark} mt-1.5`}>
                         {printCompanyName || 'محلات أبو أنس لتجارة وتسويق القات'}
                       </h1>

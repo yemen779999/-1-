@@ -42,7 +42,7 @@ export default function FloatingCalculator() {
         const rounded = Math.round(result * 10000) / 10000;
         setDisplayValue(rounded.toString());
       }
-    } catch (e) {
+    } catch (_e) {
       setDisplayValue('خطأ');
     }
   };

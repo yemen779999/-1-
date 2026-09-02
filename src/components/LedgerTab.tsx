@@ -6,10 +6,9 @@
 import React, { useState, useMemo } from 'react';
 import { Database } from '../utils.ts';
 import { DailyLedgerEntry, UserRole } from '../types.ts';
-import { SUPPORTED_CURRENCIES, getCurrencyInfo, formatCurrency } from '../currencyUtils.ts';
+import { SUPPORTED_CURRENCIES } from '../currencyUtils.ts';
 import { 
   FileSpreadsheet, 
-  Plus, 
   Trash2, 
   Printer, 
   Edit2, 

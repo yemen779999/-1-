@@ -4,7 +4,7 @@
  */
 
 import { Account, Transaction, DailyLedgerEntry, GatewayConfig, TriggeredMessage, InvoiceRecord, ActivityLog } from './types.ts';
-import { SUPPORTED_CURRENCIES, DEFAULT_RATES, fetchLiveExchangeRates, convertAmount } from './currencyUtils.ts';
+import { DEFAULT_RATES, fetchLiveExchangeRates, convertAmount } from './currencyUtils.ts';
 
 // Standard LocalStorage keys
 const STORAGE_KEYS = {
@@ -50,7 +50,7 @@ export function getArabicDayName(dateString: string): string {
     const date = new Date(dateString);
     const dayIndex = date.getDay();
     return ARABIC_DAYS[dayIndex] || '';
-  } catch (e) {
+  } catch (_e) {
     return 'غير محدد';
   }
 }
@@ -458,8 +458,9 @@ export class Database {
     };
   }
 
-  importState(state: any) {
-    if (!state) return;
+  importState(state: unknown) {
+    if (!state || typeof state !== 'object') return;
+    const s = state as Record<string, unknown>;
     
     // Helper to merge arrays and move replaced items to deleted
     const mergeEntities = <T extends { id: string; updatedAt?: string }>(
@@ -485,43 +486,43 @@ export class Database {
       return merged;
     };
 
-    if (state.accounts !== undefined) this.accounts = mergeEntities(this.accounts, state.accounts, this.deletedAccounts);
-    if (state.transactions !== undefined) this.transactions = mergeEntities(this.transactions, state.transactions, this.deletedTransactions);
-    if (state.dailyEntries !== undefined) this.dailyEntries = mergeEntities(this.dailyEntries, state.dailyEntries, this.deletedDailyEntries);
-    if (state.invoices !== undefined) this.invoices = mergeEntities(this.invoices, state.invoices, this.deletedInvoices);
+    if (s.accounts !== undefined) this.accounts = mergeEntities(this.accounts, s.accounts as Account[], this.deletedAccounts);
+    if (s.transactions !== undefined) this.transactions = mergeEntities(this.transactions, s.transactions as Transaction[], this.deletedTransactions);
+    if (s.dailyEntries !== undefined) this.dailyEntries = mergeEntities(this.dailyEntries, s.dailyEntries as DailyLedgerEntry[], this.deletedDailyEntries);
+    if (s.invoices !== undefined) this.invoices = mergeEntities(this.invoices, s.invoices as InvoiceRecord[], this.deletedInvoices);
     
     // Keep configuration and other state from backup if defined, but don't overwrite if not wanted?
     // Actually, user probably wants to restore settings too. Let's restore them but not delete current items in arrays.
     // The previous implementation was simple overwriting. The request is specifically about data (accounts/transactions).
     // Let's keep existing assignments for non-array fields to be safe.
     
-    if (state.gatewayConfig !== undefined) this.gatewayConfig = state.gatewayConfig;
-    if (state.triggeredMessages !== undefined) this.triggeredMessages = state.triggeredMessages;
-    if (state.primaryCurrency !== undefined) this.primaryCurrency = state.primaryCurrency;
-    if (state.exchangeRates !== undefined) this.exchangeRates = state.exchangeRates;
-    if (state.lastRatesUpdate !== undefined) this.lastRatesUpdate = state.lastRatesUpdate;
-    if (state.restrictToAdmin !== undefined) this.restrictToAdmin = state.restrictToAdmin;
-    if (state.appAccentColor !== undefined) this.appAccentColor = state.appAccentColor;
-    if (state.appBorderShape !== undefined) this.appBorderShape = state.appBorderShape;
-    if (state.appBrandIcon !== undefined) this.appBrandIcon = state.appBrandIcon;
-    if (state.appBackgroundImage !== undefined) this.appBackgroundImage = state.appBackgroundImage;
-    if (state.appBackgroundOpacity !== undefined) this.appBackgroundOpacity = state.appBackgroundOpacity;
-    if (state.printCompanyName !== undefined) this.printCompanyName = state.printCompanyName;
-    if (state.printPhone !== undefined) this.printPhone = state.printPhone;
-    if (state.printAddress !== undefined) this.printAddress = state.printAddress;
-    if (state.printTaxNumber !== undefined) this.printTaxNumber = state.printTaxNumber;
-    if (state.printHeaderNote !== undefined) this.printHeaderNote = state.printHeaderNote;
-    if (state.printFooterNote !== undefined) this.printFooterNote = state.printFooterNote;
-    if (state.printThemeColor !== undefined) this.printThemeColor = state.printThemeColor;
-    if (state.printShowBalance !== undefined) this.printShowBalance = state.printShowBalance;
-    if (state.printShowSignature !== undefined) this.printShowSignature = state.printShowSignature;
-    if (state.printShowWatermark !== undefined) this.printShowWatermark = state.printShowWatermark;
-    if (state.printPaperSize !== undefined) this.printPaperSize = state.printPaperSize;
-    if (state.showWidgetTotalSales !== undefined) this.showWidgetTotalSales = state.showWidgetTotalSales;
-    if (state.showWidgetActiveAccounts !== undefined) this.showWidgetActiveAccounts = state.showWidgetActiveAccounts;
-    if (state.showWidgetAlerts !== undefined) this.showWidgetAlerts = state.showWidgetAlerts;
-    if (state.printCompanyLogo !== undefined) this.printCompanyLogo = state.printCompanyLogo;
-    if (state.activityLogs !== undefined) this.activityLogs = state.activityLogs;
+    if (s.gatewayConfig !== undefined) this.gatewayConfig = s.gatewayConfig as GatewayConfig;
+    if (s.triggeredMessages !== undefined) this.triggeredMessages = s.triggeredMessages as TriggeredMessage[];
+    if (s.primaryCurrency !== undefined) this.primaryCurrency = s.primaryCurrency as string;
+    if (s.exchangeRates !== undefined) this.exchangeRates = s.exchangeRates as { [key: string]: number };
+    if (s.lastRatesUpdate !== undefined) this.lastRatesUpdate = s.lastRatesUpdate as string;
+    if (s.restrictToAdmin !== undefined) this.restrictToAdmin = s.restrictToAdmin as boolean;
+    if (s.appAccentColor !== undefined) this.appAccentColor = s.appAccentColor as string;
+    if (s.appBorderShape !== undefined) this.appBorderShape = s.appBorderShape as string;
+    if (s.appBrandIcon !== undefined) this.appBrandIcon = s.appBrandIcon as string;
+    if (s.appBackgroundImage !== undefined) this.appBackgroundImage = s.appBackgroundImage as string;
+    if (s.appBackgroundOpacity !== undefined) this.appBackgroundOpacity = s.appBackgroundOpacity as number;
+    if (s.printCompanyName !== undefined) this.printCompanyName = s.printCompanyName as string;
+    if (s.printPhone !== undefined) this.printPhone = s.printPhone as string;
+    if (s.printAddress !== undefined) this.printAddress = s.printAddress as string;
+    if (s.printTaxNumber !== undefined) this.printTaxNumber = s.printTaxNumber as string;
+    if (s.printHeaderNote !== undefined) this.printHeaderNote = s.printHeaderNote as string;
+    if (s.printFooterNote !== undefined) this.printFooterNote = s.printFooterNote as string;
+    if (s.printThemeColor !== undefined) this.printThemeColor = s.printThemeColor as string;
+    if (s.printShowBalance !== undefined) this.printShowBalance = s.printShowBalance as boolean;
+    if (s.printShowSignature !== undefined) this.printShowSignature = s.printShowSignature as boolean;
+    if (s.printShowWatermark !== undefined) this.printShowWatermark = s.printShowWatermark as boolean;
+    if (s.printPaperSize !== undefined) this.printPaperSize = s.printPaperSize as string;
+    if (s.showWidgetTotalSales !== undefined) this.showWidgetTotalSales = s.showWidgetTotalSales as boolean;
+    if (s.showWidgetActiveAccounts !== undefined) this.showWidgetActiveAccounts = s.showWidgetActiveAccounts as boolean;
+    if (s.showWidgetAlerts !== undefined) this.showWidgetAlerts = s.showWidgetAlerts as boolean;
+    if (s.printCompanyLogo !== undefined) this.printCompanyLogo = s.printCompanyLogo as string;
+    if (s.activityLogs !== undefined) this.activityLogs = s.activityLogs as ActivityLog[];
 
     this.save();
   }

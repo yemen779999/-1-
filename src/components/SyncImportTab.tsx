@@ -18,7 +18,6 @@ import {
   Trash2, 
   HelpCircle,
   Sparkles,
-  SmartphoneIcon,
   LogOut,
   LogIn
 } from "lucide-react";
@@ -246,8 +245,9 @@ export default function SyncImportTab({ db, onDatabaseUpdate, role: _role }: Syn
       setImportLoading(true);
       await googleSignIn();
       setSuccessMessage("تم تسجيل الدخول بنجاح.");
-    } catch (e: any) {
-      setErrorMessage(`فشل تسجيل الدخول: ${e.message}`);
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : String(e);
+      setErrorMessage(`فشل تسجيل الدخول: ${msg}`);
     } finally {
       setImportLoading(false);
     }
@@ -258,8 +258,9 @@ export default function SyncImportTab({ db, onDatabaseUpdate, role: _role }: Syn
       await logout();
       setSyncEnabled(false);
       setSuccessMessage("تم تسجيل الخروج بنجاح.");
-    } catch (e: any) {
-      setErrorMessage(e.message);
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : String(e);
+      setErrorMessage(msg);
     }
   };
 
@@ -417,9 +418,10 @@ export default function SyncImportTab({ db, onDatabaseUpdate, role: _role }: Syn
         setActiveImportType("excel");
         addLog("تمت قراءة وتحليل بيانات Excel بنجاح.");
 
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error(err);
-        setErrorMessage(err.message || "خطأ أثناء معالجة ملف Excel.");
+        const msg = err instanceof Error ? err.message : String(err);
+        setErrorMessage(msg || "خطأ أثناء معالجة ملف Excel.");
       } finally {
         setImportLoading(false);
       }
@@ -476,9 +478,10 @@ export default function SyncImportTab({ db, onDatabaseUpdate, role: _role }: Syn
         });
         setActiveImportType("ai");
 
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error(err);
-        setErrorMessage(err.message || "حدث عطل غير متوقع أثناء معالجة المستند عبر ملقم الذكاء الاصطناعي.");
+        const msg = err instanceof Error ? err.message : String(err);
+        setErrorMessage(msg || "حدث عطل غير متوقع أثناء معالجة المستند عبر ملقم الذكاء الاصطناعي.");
       } finally {
         setImportLoading(false);
       }
@@ -595,8 +598,9 @@ export default function SyncImportTab({ db, onDatabaseUpdate, role: _role }: Syn
       // Clear previews
       setExcelPreview(null);
       setAiPreview(null);
-    } catch (e: any) {
-      setErrorMessage(`خطأ في ترحيل البيانات المستوردة: ${e.message}`);
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : String(e);
+      setErrorMessage(`خطأ في ترحيل البيانات المستوردة: ${msg}`);
     }
   };
 
@@ -655,8 +659,9 @@ export default function SyncImportTab({ db, onDatabaseUpdate, role: _role }: Syn
         
         addLog("تم إرسال القيد من الموبايل السحابي! جاري التحليل والدمج التلقائي على أجهزتك الأخرى...");
       }
-    } catch (e: any) {
-      addLog(`خطأ في محاكاة بث الموبايل: ${e.message}`);
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : String(e);
+      addLog(`خطأ في محاكاة بث الموبايل: ${msg}`);
     } finally {
       setIsSimulatingAndroid(false);
     }
@@ -1404,7 +1409,7 @@ export default function SyncImportTab({ db, onDatabaseUpdate, role: _role }: Syn
           {/* Interactive Multi-Platform Simulator */}
           <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/80 rounded-3xl p-6 shadow-sm space-y-5" id="cross_platform_simulator">
             <div className="flex items-center gap-2 pb-2 border-b border-slate-100 dark:border-slate-800/50">
-              <SmartphoneIcon className="text-indigo-600" size={17} />
+              <Smartphone className="text-indigo-600" size={17} />
               <span className="text-xs font-black text-slate-800 dark:text-slate-100">محاكي منصات أندرويد وويندوز (ANAS Cloud Tool)</span>
             </div>
 

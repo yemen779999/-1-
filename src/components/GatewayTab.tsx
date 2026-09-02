@@ -6,28 +6,22 @@
 import React, { useState, useEffect } from 'react';
 import { Database } from '../utils.ts';
 import { UserRole } from '../types.ts';
-import { initAuth, googleSignIn, getAccessToken, logout } from '../auth.ts';
+import { initAuth, googleSignIn, logout } from '../auth.ts';
 import type { User } from 'firebase/auth';
 import { 
   Settings2, 
-  Send, 
   CheckCircle2, 
   AlertCircle, 
-  Wifi, 
   Clock, 
   Trash2, 
   Key, 
-  Globe, 
-  MessageSquare,
-  Sparkles,
   Lock,
   Palette,
   Download,
   Cloud,
   Eye,
   EyeOff,
-  Printer,
-  FileText
+  Printer
 } from 'lucide-react';
 
 interface GatewayTabProps {
