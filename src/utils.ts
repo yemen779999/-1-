@@ -56,15 +56,23 @@ export function getArabicDayName(dateString: string): string {
 }
 
 /**
- * Sanitizes image URL to prevent XSS / malicious protocol execution.
+ * Sanitizes dynamic image URLs to prevent XSS / HTML injection vectors and satisfy CodeQL security checks.
  */
 export function getSafeImageUrl(url: string | undefined | null): string {
   if (!url) return '';
-  const trimmed = url.trim();
-  if (/^(?:https?:\/\/|data:image\/|blob:|\/)/i.test(trimmed)) {
-    return trimmed;
+  const trimmed = String(url).trim();
+
+  // Validate allowed safe schemes: data:image, https://, http://, blob:, relative /
+  if (!/^(?:https?:\/\/|http:\/\/|data:image\/[a-zA-Z0-9+.-]+;base64,|blob:|\/)/i.test(trimmed)) {
+    return '';
   }
-  return '';
+
+  // Escape dangerous quote and angle-bracket characters to eliminate XSS taint sinks without breaking valid URL query parameters (&)
+  return trimmed
+    .replace(/</g, '%3C')
+    .replace(/>/g, '%3E')
+    .replace(/"/g, '%22')
+    .replace(/'/g, '%27');
 }
 
 // Initial Accounts Seed
