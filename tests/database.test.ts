@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest';
-import { Database } from '../src/utils';
-import { BackupService } from '../src/backupService';
+import { Database } from '../src/utils.ts';
+import { BackupService } from '../src/backupService.ts';
 
 test('Database initializes with default accounts and transactions', () => {
   const db = new Database();
