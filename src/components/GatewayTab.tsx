@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { Database } from '../utils';
+import { Database, getSafeImageUrl } from '../utils';
 import { UserRole } from '../types';
 import { initAuth, googleSignIn, getAccessToken, logout } from '../auth';
 import type { User } from 'firebase/auth';
@@ -790,7 +790,7 @@ export default function GatewayTab({ db, onDatabaseUpdate, role }: GatewayTabPro
                       {printCompanyLogo ? (
                         <div className="flex flex-col items-center justify-center space-y-2">
                           <img 
-                            src={printCompanyLogo} 
+                            src={getSafeImageUrl(printCompanyLogo)}
                             alt="Logo preview" 
                             className="max-h-24 max-w-full object-contain rounded-lg"
                             referrerPolicy="no-referrer"

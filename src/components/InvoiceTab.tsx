@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useRef } from 'react';
 import * as XLSX from 'xlsx';
-import { Database } from '../utils';
+import { Database, getSafeImageUrl } from '../utils';
 import { UserRole } from '../types';
 import { 
   Printer, 
@@ -51,7 +51,7 @@ const QatLogo = ({ colorScheme = 'emerald', customLogoUrl }: QatLogoProps) => {
   if (customLogoUrl) {
     return (
       <img 
-        src={customLogoUrl} 
+        src={getSafeImageUrl(customLogoUrl)}
         alt="Logo" 
         className="w-16 h-16 object-contain rounded-xl print:max-h-16" 
         referrerPolicy="no-referrer"
@@ -822,7 +822,7 @@ export default function InvoiceTab({ db, onDatabaseUpdate, role }: InvoiceTabPro
                       <div className="flex items-center gap-3">
                         {attachmentData.startsWith('data:image/') ? (
                           <div className="w-16 h-16 rounded-lg overflow-hidden border border-slate-300 bg-white flex items-center justify-center shrink-0">
-                            <img src={attachmentData} alt="Attached Preview" className="w-full h-full object-cover" />
+                            <img src={getSafeImageUrl(attachmentData)} alt="Attached Preview" className="w-full h-full object-cover" />
                           </div>
                         ) : (
                           <div className="w-16 h-16 rounded-lg bg-indigo-500/10 text-indigo-600 flex items-center justify-center shrink-0">
@@ -841,7 +841,11 @@ export default function InvoiceTab({ db, onDatabaseUpdate, role }: InvoiceTabPro
                           onClick={() => {
                             const newWindow = window.open();
                             if (newWindow) {
-                              newWindow.document.write(`<img src="${attachmentData}" style="max-width:100%; height:auto;" />`);
+                              const img = newWindow.document.createElement('img');
+                              img.src = getSafeImageUrl(attachmentData);
+                              img.style.maxWidth = '100%';
+                              img.style.height = 'auto';
+                              newWindow.document.body.appendChild(img);
                             }
                           }}
                           className="px-2.5 py-1.5 bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 rounded-lg text-[10px] font-bold transition-all cursor-pointer"
@@ -1154,7 +1158,7 @@ export default function InvoiceTab({ db, onDatabaseUpdate, role }: InvoiceTabPro
                   <div className="mt-8 break-before-page border-t-2 border-dashed border-slate-200 pt-6">
                     <h4 className="font-bold text-slate-800 mb-2 text-xs">📂 صورة الملف المرفق بالفاتورة:</h4>
                     <div className="border border-slate-300 rounded-xl p-1 bg-white flex justify-center">
-                      <img src={attachmentData} alt="Attached Document" className="max-h-[380px] object-contain" />
+                        <img src={getSafeImageUrl(attachmentData)} alt="Attached Document" className="max-h-[380px] object-contain" />
                     </div>
                   </div>
                 )}
@@ -1452,7 +1456,7 @@ export default function InvoiceTab({ db, onDatabaseUpdate, role }: InvoiceTabPro
                   {selectedPreviewInvoice.attachmentData.startsWith('data:image/') ? (
                     <div className="border border-slate-200 dark:border-slate-700/60 rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-950 p-2 max-w-lg mx-auto flex items-center justify-center shadow-xs">
                       <img 
-                        src={selectedPreviewInvoice.attachmentData} 
+                        src={getSafeImageUrl(selectedPreviewInvoice.attachmentData)}
                         alt="Attached Document" 
                         className="max-h-72 object-contain rounded-xl hover:scale-105 transition-transform duration-300"
                       />
@@ -1763,7 +1767,7 @@ export default function InvoiceTab({ db, onDatabaseUpdate, role }: InvoiceTabPro
                     <div className="mt-8 border-t-2 border-dashed border-slate-200 pt-6">
                       <h4 className="font-bold text-slate-800 mb-2 text-xs">📂 صورة الملف المرفق بالفاتورة:</h4>
                       <div className="border border-slate-300 rounded-xl p-1 bg-white flex justify-center">
-                        <img src={attachmentData} alt="Attached Document" className="max-h-[380px] object-contain" />
+                        <img src={getSafeImageUrl(attachmentData)} alt="Attached Document" className="max-h-[380px] object-contain" />
                       </div>
                     </div>
                   )}

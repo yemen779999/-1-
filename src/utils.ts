@@ -300,6 +300,7 @@ const INITIAL_DAILY_ENTRIES: DailyLedgerEntry[] = [
 // Helper to load data from localStorage or fallback
 export function loadFromStorage<T>(key: string, defaultValue: T): T {
   try {
+    if (typeof localStorage === 'undefined') return defaultValue;
     const item = localStorage.getItem(key);
     return item ? JSON.parse(item) : defaultValue;
   } catch (e) {
@@ -310,10 +311,27 @@ export function loadFromStorage<T>(key: string, defaultValue: T): T {
 
 export function saveToStorage<T>(key: string, data: T): void {
   try {
+    if (typeof localStorage === 'undefined') return;
     localStorage.setItem(key, JSON.stringify(data));
   } catch (e) {
     console.error(`Error saving key ${key} to storage:`, e);
   }
+}
+
+// Security: Helper function to sanitize image URLs to prevent XSS vulnerabilities
+export function getSafeImageUrl(url: string | undefined | null, fallback = ''): string {
+  if (!url) return fallback;
+  const trimmed = url.trim();
+  if (
+    trimmed.startsWith('data:image/') ||
+    trimmed.startsWith('http://') ||
+    trimmed.startsWith('https://') ||
+    trimmed.startsWith('/') ||
+    trimmed.startsWith('./')
+  ) {
+    return trimmed;
+  }
+  return fallback;
 }
 
 // Default Exchange Rates (Base: USD = 1.0)

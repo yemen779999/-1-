@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useMemo } from 'react';
-import { Database } from '../utils';
+import { Database, getSafeImageUrl } from '../utils';
 import { DailyLedgerEntry, UserRole } from '../types';
 import { SUPPORTED_CURRENCIES, getCurrencyInfo, formatCurrency } from '../currencyUtils';
 import { 
@@ -578,7 +578,7 @@ export default function LedgerTab({ db, onDatabaseUpdate, role }: LedgerTabProps
 
           <div className="flex justify-between items-start border-b pb-4">
             <div className="flex items-center gap-4">
-              <img src="/icon.jpg" alt="Company Logo" className="w-16 h-16 object-contain rounded-lg" />
+              <img src={getSafeImageUrl(db.printCompanyLogo, '/icon.jpg')} alt="Company Logo" className="w-16 h-16 object-contain rounded-lg" />
               <div className="space-y-1">
                 <h1 className={`text-2xl font-black ${
                   db.printThemeColor === 'indigo' ? 'text-indigo-700' :
