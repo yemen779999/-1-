@@ -476,6 +476,7 @@ export class Database {
     };
   }
 
+  // deno-lint-ignore no-explicit-any
   importState(state: any) {
     if (!state) return;
     
@@ -493,7 +494,7 @@ export class Database {
           // If the item exists and is different, move old one to deletedStorage
           if (JSON.stringify(merged[existingIndex]) !== JSON.stringify(incomingItem)) {
             const oldItem = { ...merged[existingIndex], deletedAt: new Date().toISOString() };
-            deletedStorage.push(oldItem);
+            deletedStorage.push(oldItem as any);
             merged[existingIndex] = incomingItem;
           }
         } else {
@@ -507,11 +508,6 @@ export class Database {
     if (state.transactions !== undefined) this.transactions = mergeEntities(this.transactions, state.transactions, this.deletedTransactions);
     if (state.dailyEntries !== undefined) this.dailyEntries = mergeEntities(this.dailyEntries, state.dailyEntries, this.deletedDailyEntries);
     if (state.invoices !== undefined) this.invoices = mergeEntities(this.invoices, state.invoices, this.deletedInvoices);
-    
-    // Keep configuration and other state from backup if defined, but don't overwrite if not wanted?
-    // Actually, user probably wants to restore settings too. Let's restore them but not delete current items in arrays.
-    // The previous implementation was simple overwriting. The request is specifically about data (accounts/transactions).
-    // Let's keep existing assignments for non-array fields to be safe.
     
     if (state.gatewayConfig !== undefined) this.gatewayConfig = state.gatewayConfig;
     if (state.triggeredMessages !== undefined) this.triggeredMessages = state.triggeredMessages;

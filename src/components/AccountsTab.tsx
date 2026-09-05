@@ -7,7 +7,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import * as XLSX from 'xlsx';
 import { Database, getSafeImageUrl } from '../utils.ts';
 import { Account, Transaction, AccountType, UserRole } from '../types.ts';
-import { SUPPORTED_CURRENCIES, getCurrencyInfo, formatCurrency } from '../currencyUtils.ts';
+import { SUPPORTED_CURRENCIES, getCurrencyInfo } from '../currencyUtils.ts';
 import { 
   Users, 
   Plus, 
@@ -18,15 +18,10 @@ import {
   Trash2, 
   Printer, 
   ArrowLeftRight, 
-  ArrowUpLeft, 
-  ArrowDownRight,
   ArrowUp,
   ArrowDown,
   UserPlus,
-  ArrowRight,
   Filter,
-  DollarSign,
-  Send,
   Bell,
   Edit,
   Lock,
@@ -181,17 +176,6 @@ const QatLogo = ({ colorScheme = 'emerald', customLogoUrl }: QatLogoProps) => {
   );
 };
 
-const getArabicDayName = (dateString: string): string => {
-  if (!dateString) return '';
-  try {
-    const date = new Date(dateString);
-    if (isNaN(date.getTime())) return '';
-    const days = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
-    return days[date.getDay()];
-  } catch (e) {
-    return '';
-  }
-};
 
 const _getFormattedMonthDay = (dateString: string): string => {
   if (!dateString) return '';
