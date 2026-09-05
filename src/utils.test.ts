@@ -1,6 +1,37 @@
-import { test, expect } from 'vitest';
 import { Database } from './utils.ts';
 import { convertAmount, formatCurrency } from './currencyUtils.ts';
+
+const isDeno = typeof (globalThis as any).Deno !== 'undefined';
+
+let test: (name: string, fn: () => void | Promise<void>) => void;
+let expect: any;
+
+if (isDeno) {
+  test = (globalThis as any).Deno.test;
+  expect = (actual: any) => ({
+    toBe: (expected: any) => {
+      if (actual !== expected) throw new Error(`Expected ${actual} to be ${expected}`);
+    },
+    toContain: (expected: any) => {
+      if (typeof actual === 'string' ? !actual.includes(expected) : !actual.includes(expected)) {
+        throw new Error(`Expected ${actual} to contain ${expected}`);
+      }
+    },
+    toBeGreaterThan: (expected: any) => {
+      if (!(actual > expected)) throw new Error(`Expected ${actual} to be > ${expected}`);
+    },
+    toBeDefined: () => {
+      if (actual === undefined) throw new Error(`Expected value to be defined`);
+    },
+    toHaveProperty: (prop: string) => {
+      if (!actual || !(prop in actual)) throw new Error(`Expected object to have property ${prop}`);
+    }
+  });
+} else {
+  const vitest = await import('vitest');
+  test = vitest.test;
+  expect = vitest.expect;
+}
 
 test('converts same currency with 1:1 ratio', () => {
   expect(convertAmount(100, 'USD', 'USD')).toBe(100);
