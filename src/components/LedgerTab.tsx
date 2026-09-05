@@ -4,9 +4,9 @@
  */
 
 import React, { useState, useMemo } from 'react';
-import { Database, getSafeImageUrl } from '../utils';
-import { DailyLedgerEntry, UserRole } from '../types';
-import { SUPPORTED_CURRENCIES, getCurrencyInfo, formatCurrency } from '../currencyUtils';
+import { Database, getSafeImageUrl } from '../utils.ts';
+import { DailyLedgerEntry, UserRole } from '../types.ts';
+import { SUPPORTED_CURRENCIES, getCurrencyInfo, formatCurrency } from '../currencyUtils.ts';
 import { 
   FileSpreadsheet, 
   Plus, 

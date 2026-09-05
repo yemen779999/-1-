@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useRef } from 'react';
 import * as XLSX from 'xlsx';
-import { Database, getSafeImageUrl } from '../utils';
-import { UserRole } from '../types';
+import { Database, getSafeImageUrl } from '../utils.ts';
+import { UserRole } from '../types.ts';
 import { 
   Printer, 
   Plus, 

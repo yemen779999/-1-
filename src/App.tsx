@@ -5,25 +5,25 @@
 
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import CryptoJS from 'crypto-js';
-import { Database, getSafeImageUrl } from './utils';
-import DashboardTab from './components/DashboardTab';
-import AccountsTab from './components/AccountsTab';
-import LedgerTab from './components/LedgerTab';
-import GatewayTab from './components/GatewayTab';
-import ReportsTab from './components/ReportsTab';
-import SyncImportTab from './components/SyncImportTab';
-import AIControlDashboard from './components/AIControlDashboard';
-import InvoiceTab from './components/InvoiceTab';
-import RecycleBinTab from './components/RecycleBinTab';
-import ActivityLogTab from './components/ActivityLogTab';
-import { BackupCenterTab } from './components/BackupCenterTab';
-import { BackupService } from './backupService';
-import { UserRole } from './types';
-import { initAuth, auth, googleSignIn, logout, firestore, handleFirestoreError, OperationType } from './auth';
+import { Database, getSafeImageUrl } from './utils.ts';
+import DashboardTab from './components/DashboardTab.tsx';
+import AccountsTab from './components/AccountsTab.tsx';
+import LedgerTab from './components/LedgerTab.tsx';
+import GatewayTab from './components/GatewayTab.tsx';
+import ReportsTab from './components/ReportsTab.tsx';
+import SyncImportTab from './components/SyncImportTab.tsx';
+import AIControlDashboard from './components/AIControlDashboard.tsx';
+import InvoiceTab from './components/InvoiceTab.tsx';
+import RecycleBinTab from './components/RecycleBinTab.tsx';
+import ActivityLogTab from './components/ActivityLogTab.tsx';
+import { BackupCenterTab } from './components/BackupCenterTab.tsx';
+import { BackupService } from './backupService.ts';
+import { UserRole } from './types.ts';
+import { initAuth, auth, googleSignIn, logout, firestore, handleFirestoreError, OperationType } from './auth.ts';
 import { doc, setDoc, onSnapshot, getDoc } from 'firebase/firestore';
-import FloatingCalculator from './components/FloatingCalculator';
-import QuickEntryModal from './components/QuickEntryModal';
-import ErrorBoundary from './components/ErrorBoundary';
+import FloatingCalculator from './components/FloatingCalculator.tsx';
+import QuickEntryModal from './components/QuickEntryModal.tsx';
+import ErrorBoundary from './components/ErrorBoundary.tsx';
 import { 
   Building2, 
   LayoutDashboard, 
