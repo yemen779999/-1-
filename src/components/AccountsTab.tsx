@@ -5,9 +5,9 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
 import * as XLSX from 'xlsx';
-import { Database } from '../utils';
-import { Account, Transaction, AccountType, UserRole } from '../types';
-import { SUPPORTED_CURRENCIES, getCurrencyInfo, formatCurrency } from '../currencyUtils';
+import { Database, getSafeImageUrl } from '../utils.ts';
+import { Account, Transaction, AccountType, UserRole } from '../types.ts';
+import { SUPPORTED_CURRENCIES, getCurrencyInfo } from '../currencyUtils.ts';
 import { 
   Users, 
   Plus, 
@@ -18,15 +18,10 @@ import {
   Trash2, 
   Printer, 
   ArrowLeftRight, 
-  ArrowUpLeft, 
-  ArrowDownRight,
   ArrowUp,
   ArrowDown,
   UserPlus,
-  ArrowRight,
   Filter,
-  DollarSign,
-  Send,
   Bell,
   Edit,
   Lock,
@@ -142,7 +137,7 @@ const QatLogo = ({ colorScheme = 'emerald', customLogoUrl }: QatLogoProps) => {
   if (customLogoUrl) {
     return (
       <img 
-        src={customLogoUrl} 
+        src={getSafeImageUrl(customLogoUrl)}
         alt="Logo" 
         className="w-16 h-16 object-contain rounded-xl print:max-h-16" 
         referrerPolicy="no-referrer"
@@ -181,17 +176,6 @@ const QatLogo = ({ colorScheme = 'emerald', customLogoUrl }: QatLogoProps) => {
   );
 };
 
-const getArabicDayName = (dateString: string): string => {
-  if (!dateString) return '';
-  try {
-    const date = new Date(dateString);
-    if (isNaN(date.getTime())) return '';
-    const days = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
-    return days[date.getDay()];
-  } catch (e) {
-    return '';
-  }
-};
 
 const _getFormattedMonthDay = (dateString: string): string => {
   if (!dateString) return '';

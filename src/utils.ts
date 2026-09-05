@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Account, Transaction, DailyLedgerEntry, GatewayConfig, TriggeredMessage, InvoiceRecord, ActivityLog } from './types';
-import { SUPPORTED_CURRENCIES, DEFAULT_RATES, fetchLiveExchangeRates, convertAmount } from './currencyUtils';
+import { Account, Transaction, DailyLedgerEntry, GatewayConfig, TriggeredMessage, InvoiceRecord, ActivityLog } from './types.ts';
+import { SUPPORTED_CURRENCIES, DEFAULT_RATES, fetchLiveExchangeRates, convertAmount } from './currencyUtils.ts';
 
 // Standard LocalStorage keys
 const STORAGE_KEYS = {
@@ -300,6 +300,7 @@ const INITIAL_DAILY_ENTRIES: DailyLedgerEntry[] = [
 // Helper to load data from localStorage or fallback
 export function loadFromStorage<T>(key: string, defaultValue: T): T {
   try {
+    if (typeof localStorage === 'undefined') return defaultValue;
     const item = localStorage.getItem(key);
     return item ? JSON.parse(item) : defaultValue;
   } catch (e) {
@@ -310,10 +311,27 @@ export function loadFromStorage<T>(key: string, defaultValue: T): T {
 
 export function saveToStorage<T>(key: string, data: T): void {
   try {
+    if (typeof localStorage === 'undefined') return;
     localStorage.setItem(key, JSON.stringify(data));
   } catch (e) {
     console.error(`Error saving key ${key} to storage:`, e);
   }
+}
+
+// Security: Helper function to sanitize image URLs to prevent XSS vulnerabilities
+export function getSafeImageUrl(url: string | undefined | null, fallback = ''): string {
+  if (!url) return fallback;
+  const trimmed = url.trim();
+  if (
+    trimmed.startsWith('data:image/') ||
+    trimmed.startsWith('http://') ||
+    trimmed.startsWith('https://') ||
+    trimmed.startsWith('/') ||
+    trimmed.startsWith('./')
+  ) {
+    return trimmed;
+  }
+  return fallback;
 }
 
 // Default Exchange Rates (Base: USD = 1.0)
@@ -458,6 +476,7 @@ export class Database {
     };
   }
 
+  // deno-lint-ignore no-explicit-any
   importState(state: any) {
     if (!state) return;
     
@@ -475,7 +494,7 @@ export class Database {
           // If the item exists and is different, move old one to deletedStorage
           if (JSON.stringify(merged[existingIndex]) !== JSON.stringify(incomingItem)) {
             const oldItem = { ...merged[existingIndex], deletedAt: new Date().toISOString() };
-            deletedStorage.push(oldItem);
+            deletedStorage.push(oldItem as any);
             merged[existingIndex] = incomingItem;
           }
         } else {
@@ -489,11 +508,6 @@ export class Database {
     if (state.transactions !== undefined) this.transactions = mergeEntities(this.transactions, state.transactions, this.deletedTransactions);
     if (state.dailyEntries !== undefined) this.dailyEntries = mergeEntities(this.dailyEntries, state.dailyEntries, this.deletedDailyEntries);
     if (state.invoices !== undefined) this.invoices = mergeEntities(this.invoices, state.invoices, this.deletedInvoices);
-    
-    // Keep configuration and other state from backup if defined, but don't overwrite if not wanted?
-    // Actually, user probably wants to restore settings too. Let's restore them but not delete current items in arrays.
-    // The previous implementation was simple overwriting. The request is specifically about data (accounts/transactions).
-    // Let's keep existing assignments for non-array fields to be safe.
     
     if (state.gatewayConfig !== undefined) this.gatewayConfig = state.gatewayConfig;
     if (state.triggeredMessages !== undefined) this.triggeredMessages = state.triggeredMessages;
