@@ -1,6 +1,6 @@
 import CryptoJS from 'crypto-js';
 import { doc, setDoc, getDoc, getDocs, collection, deleteDoc } from 'firebase/firestore';
-import { firestore, handleFirestoreError, OperationType } from './auth';
+import { firestore, handleFirestoreError, OperationType } from './auth.ts';
 
 // Since it's a client-side app, we'll generate a consistent key based on the user's UID to make it seamless.
 

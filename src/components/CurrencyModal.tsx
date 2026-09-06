@@ -18,7 +18,7 @@ import {
   HelpCircle,
   Clock
 } from 'lucide-react';
-import type { Database } from '../utils';
+import type { Database } from '../utils.ts';
 import { 
   SUPPORTED_CURRENCIES, 
   DEFAULT_RATES, 
