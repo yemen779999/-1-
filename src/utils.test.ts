@@ -1,7 +1,32 @@
-import { describe, it, expect, beforeEach } from 'vitest';
 import { Database } from './utils.ts';
 
-// Mock localStorage in Node/Vitest environment
+// Dual Deno and Vitest runtime support
+const isDeno = typeof (globalThis as any).Deno !== 'undefined';
+
+let describe: any;
+let it: any;
+let expect: any;
+let beforeEach: any;
+
+if (isDeno) {
+  const denoGlobal = (globalThis as any).Deno;
+  describe = (name: string, fn: Function) => denoGlobal.test(name, async () => { await fn(); });
+  it = (name: string, fn: Function) => fn();
+  beforeEach = (fn: Function) => fn();
+  expect = (val: any) => ({
+    toBe: (expected: any) => { if (val !== expected) throw new Error(`Expected ${expected}, got ${val}`); },
+    toBeGreaterThan: (expected: number) => { if (val <= expected) throw new Error(`Expected > ${expected}, got ${val}`); },
+    toBeDefined: () => { if (val === undefined) throw new Error(`Expected value to be defined`); }
+  });
+} else {
+  const vitest = await import('vitest');
+  describe = vitest.describe;
+  it = vitest.it;
+  expect = vitest.expect;
+  beforeEach = vitest.beforeEach;
+}
+
+// Mock localStorage in Node/Vitest or Deno test environment
 const localStorageMock = (() => {
   let store: Record<string, string> = {};
   return {
