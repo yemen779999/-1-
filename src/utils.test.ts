@@ -1,6 +1,6 @@
-import { describe, it, expect, beforeEach, beforeAll } from 'vitest';
-import { Database, getArabicDayName } from './utils';
-import { convertAmount, DEFAULT_RATES } from './currencyUtils';
+import { describe, it, expect, beforeEach } from 'vitest';
+import { Database, getArabicDayName } from './utils.ts';
+import { convertAmount } from './currencyUtils.ts';
 
 // Mock localStorage if running in Node environment
 if (typeof globalThis.localStorage === 'undefined') {
