@@ -6,6 +6,21 @@
 import { Account, Transaction, DailyLedgerEntry, GatewayConfig, TriggeredMessage, InvoiceRecord, ActivityLog } from './types';
 import { SUPPORTED_CURRENCIES, DEFAULT_RATES, fetchLiveExchangeRates, convertAmount } from './currencyUtils';
 
+export function getSafeImageUrl(url: string | undefined | null): string {
+  if (!url) return '';
+  const trimmed = url.trim();
+  if (
+    trimmed.startsWith('data:image/') ||
+    trimmed.startsWith('blob:') ||
+    trimmed.startsWith('http://') ||
+    trimmed.startsWith('https://') ||
+    trimmed.startsWith('/')
+  ) {
+    return trimmed;
+  }
+  return '';
+}
+
 // Standard LocalStorage keys
 const STORAGE_KEYS = {
   ACCOUNTS: 'smartacc_accounts',
