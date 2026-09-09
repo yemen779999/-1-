@@ -5,7 +5,7 @@
 
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import CryptoJS from 'crypto-js';
-import { Database } from './utils';
+import { Database, getSafeImageUrl } from './utils.ts';
 import DashboardTab from './components/DashboardTab';
 import AccountsTab from './components/AccountsTab';
 import LedgerTab from './components/LedgerTab';
@@ -938,7 +938,7 @@ export default function App() {
                       title="حسابي والملف الشخصي"
                     >
                       {authUser.photoURL ? (
-                        <img src={authUser.photoURL} alt="User Profile" className="w-8 h-8 rounded-full object-cover" referrerPolicy="no-referrer" />
+                        <img src={getSafeImageUrl(authUser.photoURL)} alt="User Profile" className="w-8 h-8 rounded-full object-cover" referrerPolicy="no-referrer" />
                       ) : (
                         <UserIcon size={20} className="text-slate-500" />
                       )}
@@ -1028,7 +1028,7 @@ export default function App() {
                   title="حسابي والملف الشخصي"
                 >
                   {authUser.photoURL ? (
-                    <img src={authUser.photoURL} alt="User Profile" className="w-5 h-5 rounded-full object-cover" referrerPolicy="no-referrer" />
+                    <img src={getSafeImageUrl(authUser.photoURL)} alt="User Profile" className="w-5 h-5 rounded-full object-cover" referrerPolicy="no-referrer" />
                   ) : (
                     <UserIcon size={14} className="text-slate-400" />
                   )}
@@ -1279,7 +1279,7 @@ export default function App() {
         </div>
       )}
 
-  // Scrollable Content View
+      {/* Scrollable Content View */}
       <main className="flex-1 w-full overflow-y-auto p-4 sm:p-6 lg:p-8 pb-24" id="smartacc_main_view">
         
         {/* Active view Renderer switcher */}
@@ -1562,7 +1562,7 @@ export default function App() {
             <div className="flex justify-between items-start">
               <div className="flex items-center gap-3">
                 {authUser.photoURL ? (
-                  <img src={authUser.photoURL} alt="User Profile" className="w-12 h-12 rounded-full border border-slate-200 dark:border-slate-700" referrerPolicy="no-referrer" />
+                  <img src={getSafeImageUrl(authUser.photoURL)} alt="User Profile" className="w-12 h-12 rounded-full border border-slate-200 dark:border-slate-700" referrerPolicy="no-referrer" />
                 ) : (
                   <div className="w-12 h-12 rounded-full bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 flex items-center justify-center">
                     <UserIcon size={24} />
