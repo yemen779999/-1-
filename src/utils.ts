@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Account, Transaction, DailyLedgerEntry, GatewayConfig, TriggeredMessage, InvoiceRecord, ActivityLog } from './types';
-import { SUPPORTED_CURRENCIES, DEFAULT_RATES, fetchLiveExchangeRates, convertAmount } from './currencyUtils';
+import { Account, Transaction, DailyLedgerEntry, GatewayConfig, TriggeredMessage, InvoiceRecord, ActivityLog } from './types.ts';
+import { SUPPORTED_CURRENCIES, DEFAULT_RATES, fetchLiveExchangeRates, convertAmount } from './currencyUtils.ts';
 
 export function getSafeImageUrl(url: string | undefined | null): string {
   if (!url) return '';
