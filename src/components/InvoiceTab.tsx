@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useRef } from 'react';
 import * as XLSX from 'xlsx';
-import { Database } from '../utils';
-import { UserRole } from '../types';
+import { Database } from '../utils.ts';
+import { UserRole } from '../types.ts';
 import { 
   Printer, 
   Plus, 
@@ -841,7 +841,12 @@ export default function InvoiceTab({ db, onDatabaseUpdate, role }: InvoiceTabPro
                           onClick={() => {
                             const newWindow = window.open();
                             if (newWindow) {
-                              newWindow.document.write(`<img src="${attachmentData}" style="max-width:100%; height:auto;" />`);
+                              newWindow.document.title = 'معاينة المرفق';
+                              const img = newWindow.document.createElement('img');
+                              img.src = attachmentData;
+                              img.style.maxWidth = '100%';
+                              img.style.height = 'auto';
+                              newWindow.document.body.appendChild(img);
                             }
                           }}
                           className="px-2.5 py-1.5 bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 rounded-lg text-[10px] font-bold transition-all cursor-pointer"
