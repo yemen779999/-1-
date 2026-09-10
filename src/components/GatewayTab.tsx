@@ -4,9 +4,9 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { Database } from '../utils';
-import { UserRole } from '../types';
-import { initAuth, googleSignIn, getAccessToken, logout } from '../auth';
+import { Database } from '../utils.ts';
+import { UserRole } from '../types.ts';
+import { initAuth, googleSignIn, getAccessToken, logout } from '../auth.ts';
 import type { User } from 'firebase/auth';
 import { 
   Settings2, 
