@@ -1,13 +1,32 @@
-import { test, expect } from 'vitest';
 import { Database } from './utils.ts';
 import { convertAmount, DEFAULT_RATES } from './currencyUtils.ts';
 
-test('Currency conversion works correctly with default rates', () => {
+const isDeno = typeof (globalThis as any).Deno !== 'undefined';
+
+let testFn: (name: string, fn: () => void | Promise<void>) => void;
+let expectFn: (actual: any) => { toBe: (expected: any) => void };
+
+if (isDeno) {
+  testFn = (name, fn) => (globalThis as any).Deno.test(name, fn);
+  expectFn = (actual) => ({
+    toBe: (expected) => {
+      if (actual !== expected) {
+        throw new Error(`Expected ${expected}, got ${actual}`);
+      }
+    }
+  });
+} else {
+  const vitest = await import('vitest');
+  testFn = vitest.test;
+  expectFn = vitest.expect;
+}
+
+testFn('Currency conversion works correctly with default rates', () => {
   const amountInUSD = convertAmount(100, 'USD', 'YER', DEFAULT_RATES);
-  expect(amountInUSD).toBe(25000);
+  expectFn(amountInUSD).toBe(25000);
 });
 
-test('Database account balance calculation works', () => {
+testFn('Database account balance calculation works', () => {
   if (typeof localStorage !== 'undefined') {
     localStorage.clear();
   }
@@ -22,7 +41,7 @@ test('Database account balance calculation works', () => {
   });
 
   const initialBalance = db.getAccountBalance(account.id);
-  expect(initialBalance).toBe(1000);
+  expectFn(initialBalance).toBe(1000);
 
   db.addTransaction({
     accountId: account.id,
@@ -33,5 +52,5 @@ test('Database account balance calculation works', () => {
   }, false);
 
   const newBalance = db.getAccountBalance(account.id);
-  expect(newBalance).toBe(1500);
+  expectFn(newBalance).toBe(1500);
 });
