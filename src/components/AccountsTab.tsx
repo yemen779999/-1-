@@ -5,9 +5,9 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
 import * as XLSX from 'xlsx';
-import { Database } from '../utils';
-import { Account, Transaction, AccountType, UserRole } from '../types';
-import { SUPPORTED_CURRENCIES, getCurrencyInfo, formatCurrency } from '../currencyUtils';
+import { Database } from '../utils.ts';
+import { Account, Transaction, AccountType, UserRole } from '../types.ts';
+import { SUPPORTED_CURRENCIES, getCurrencyInfo, formatCurrency } from '../currencyUtils.ts';
 import { 
   Users, 
   Plus, 
@@ -1307,7 +1307,7 @@ export default function AccountsTab({
 
             {/* Dynamic Custom PDF Print Layout */}
             {isCompactPrint && (
-              <style dangerouslySetInnerHTML={{__html: `
+              <style>{`
                 @media print {
                   @page {
                     size: auto;
@@ -1333,7 +1333,7 @@ export default function AccountsTab({
                     display: table-footer-group;
                   }
                 }
-              `}} />
+              `}</style>
             )}
             
             <div className="hidden print-only text-right space-y-4 border-b pb-6 mb-4 relative overflow-hidden" style={{ direction: 'rtl' }}>
