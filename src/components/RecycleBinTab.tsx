@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Database } from '../utils';
-import { UserRole } from '../types';
+import { Database } from '../utils.ts';
+import { UserRole } from '../types.ts';
 import { Trash2, RefreshCcw, FileX, ArchiveRestore, AlertTriangle } from 'lucide-react';
 
 interface RecycleBinTabProps {
