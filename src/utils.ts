@@ -48,8 +48,9 @@ export const ARABIC_DAYS = [
 export function getArabicDayName(dateString: string): string {
   try {
     const date = new Date(dateString);
+    if (isNaN(date.getTime())) return 'غير محدد';
     const dayIndex = date.getDay();
-    return ARABIC_DAYS[dayIndex] || '';
+    return ARABIC_DAYS[dayIndex] || 'غير محدد';
   } catch (e) {
     return 'غير محدد';
   }

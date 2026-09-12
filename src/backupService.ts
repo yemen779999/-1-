@@ -1,6 +1,6 @@
 import CryptoJS from 'crypto-js';
 import { doc, setDoc, getDoc, getDocs, collection, deleteDoc } from 'firebase/firestore';
-import { firestore, handleFirestoreError, OperationType } from './auth';
+import { firestore, handleFirestoreError, OperationType } from './auth.ts';
 
 // Since it's a client-side app, we'll generate a consistent key based on the user's UID to make it seamless.
 
@@ -133,9 +133,12 @@ export class BackupService {
       }
       const data = docSnap.data();
       const decryptedStr = this.decryptData(data.encryptedData);
+      if (!decryptedStr) {
+        throw new Error("فشل فك تشفير النسخة الاحتياطية (تالفة أو مفتاح خاطئ)");
+      }
       return JSON.parse(decryptedStr);
     } catch (e: any) {
-      if (e.message && e.message.includes("النسخة الاحتياطية")) throw e;
+      if (e.message && (e.message.includes("النسخة الاحتياطية") || e.message.includes("فشل فك تشفير"))) throw e;
       handleFirestoreError(e, OperationType.GET, `user_backups/${this.userId}/backups_store/${driveId}`);
       throw new Error("فشل تحميل أو فك تشفير النسخة الاحتياطية (تالفة أو مفتاح خاطئ)");
     }
