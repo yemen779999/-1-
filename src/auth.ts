@@ -46,7 +46,8 @@ export function handleFirestoreError(error: unknown, operationType: OperationTyp
                     errMsg.toLowerCase().includes('offline') ||
                     errMsg.toLowerCase().includes('network') ||
                     errMsg.toLowerCase().includes('failed to get document') ||
-                    errMsg.toLowerCase().includes('unavailable');
+                    errMsg.toLowerCase().includes('unavailable') ||
+                    errMsg.toLowerCase().includes('client is offline');
 
   const errInfo: FirestoreErrorInfo = {
     error: errMsg,

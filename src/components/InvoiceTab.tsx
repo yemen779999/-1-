@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useRef } from 'react';
 import * as XLSX from 'xlsx';
-import { Database } from '../utils';
-import { UserRole } from '../types';
+import { Database, getArabicDayName } from '../utils.ts';
+import { UserRole } from '../types.ts';
 import { 
   Printer, 
   Plus, 
@@ -90,17 +90,6 @@ const QatLogo = ({ colorScheme = 'emerald', customLogoUrl }: QatLogoProps) => {
   );
 };
 
-const getArabicDayName = (dateString: string): string => {
-  if (!dateString) return '';
-  try {
-    const date = new Date(dateString);
-    if (isNaN(date.getTime())) return '';
-    const days = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
-    return days[date.getDay()];
-  } catch (e) {
-    return '';
-  }
-};
 
 const getFormattedMonthDay = (dateString: string): string => {
   if (!dateString) return '';

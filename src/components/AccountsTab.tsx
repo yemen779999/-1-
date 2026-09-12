@@ -5,9 +5,9 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
 import * as XLSX from 'xlsx';
-import { Database } from '../utils';
-import { Account, Transaction, AccountType, UserRole } from '../types';
-import { SUPPORTED_CURRENCIES, getCurrencyInfo, formatCurrency } from '../currencyUtils';
+import { Database, getArabicDayName } from '../utils.ts';
+import { Account, Transaction, AccountType, UserRole } from '../types.ts';
+import { SUPPORTED_CURRENCIES, getCurrencyInfo, formatCurrency } from '../currencyUtils.ts';
 import { 
   Users, 
   Plus, 
@@ -181,28 +181,6 @@ const QatLogo = ({ colorScheme = 'emerald', customLogoUrl }: QatLogoProps) => {
   );
 };
 
-const getArabicDayName = (dateString: string): string => {
-  if (!dateString) return '';
-  try {
-    const date = new Date(dateString);
-    if (isNaN(date.getTime())) return '';
-    const days = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
-    return days[date.getDay()];
-  } catch (e) {
-    return '';
-  }
-};
-
-const _getFormattedMonthDay = (dateString: string): string => {
-  if (!dateString) return '';
-  try {
-    const date = new Date(dateString);
-    if (isNaN(date.getTime())) return '';
-    return `${date.getMonth() + 1}/${date.getDate()}`;
-  } catch (_e) {
-    return '';
-  }
-};
 
 interface AccountsTabProps {
   db: Database;
