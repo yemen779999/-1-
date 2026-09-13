@@ -22,9 +22,9 @@ import {
   LogOut,
   LogIn
 } from "lucide-react";
-import { Database } from "../utils";
-import { Account, Transaction, DailyLedgerEntry } from "../types";
-import { auth, googleSignIn, logout, getAccessToken, firestore, handleFirestoreError, OperationType } from "../auth";
+import { Database } from "../utils.ts";
+import { Account, Transaction, DailyLedgerEntry } from "../types.ts";
+import { auth, googleSignIn, logout, getAccessToken, firestore, handleFirestoreError, OperationType } from "../auth.ts";
 import { onAuthStateChanged, User } from "firebase/auth";
 import { doc, setDoc, onSnapshot, getDoc } from "firebase/firestore";
 import * as XLSX from "xlsx";

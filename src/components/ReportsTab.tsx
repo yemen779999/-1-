@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Database } from '../utils';
+import { Database } from '../utils.ts';
 import { 
   TrendingUp, 
   TrendingDown, 
