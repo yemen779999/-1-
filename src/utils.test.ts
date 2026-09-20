@@ -1,4 +1,4 @@
-import { Database } from './utils.ts';
+import { Database, getSafeImageUrl } from './utils.ts';
 
 // Dual Deno and Vitest runtime support
 const isDeno = typeof (globalThis as any).Deno !== 'undefined';
@@ -149,5 +149,12 @@ describe('Database System Tests', () => {
 
     expect(db.accounts.some(a => a.id === account.id)).toBe(false);
     expect(db.deletedAccounts.some(a => a.id === account.id)).toBe(true);
+  });
+
+  it('getSafeImageUrl returns trimmed valid URLs or empty string', () => {
+    expect(getSafeImageUrl('https://example.com/logo.png')).toBe('https://example.com/logo.png');
+    expect(getSafeImageUrl('data:image/png;base64,123')).toBe('data:image/png;base64,123');
+    expect(getSafeImageUrl('javascript:alert(1)')).toBe('');
+    expect(getSafeImageUrl(null)).toBe('');
   });
 });
