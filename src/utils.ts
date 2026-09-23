@@ -1126,3 +1126,21 @@ export class Database {
   }
 }
 
+/**
+ * Sanitizes image URLs to prevent DOM XSS vulnerabilities.
+ * Accepts safe schemes (data:image/, blob:, http://, https://, and relative paths starting with /).
+ */
+export function getSafeImageUrl(url?: string): string {
+  if (!url) return '';
+  const trimmed = url.trim();
+  if (
+    trimmed.startsWith('data:image/') ||
+    trimmed.startsWith('blob:') ||
+    trimmed.startsWith('http://') ||
+    trimmed.startsWith('https://') ||
+    trimmed.startsWith('/')
+  ) {
+    return trimmed;
+  }
+  return '';
+}
