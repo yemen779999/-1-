@@ -45,6 +45,21 @@ export const ARABIC_DAYS = [
   'السبت'
 ];
 
+export function getSafeImageUrl(url?: string): string {
+  if (!url || typeof url !== 'string') return '';
+  const trimmed = url.trim();
+  if (
+    trimmed.startsWith('data:image/') ||
+    trimmed.startsWith('http://') ||
+    trimmed.startsWith('https://') ||
+    trimmed.startsWith('blob:') ||
+    trimmed.startsWith('/')
+  ) {
+    return trimmed;
+  }
+  return '';
+}
+
 export function getArabicDayName(dateString: string): string {
   try {
     const date = new Date(dateString);
