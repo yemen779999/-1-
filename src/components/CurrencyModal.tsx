@@ -26,7 +26,7 @@ import {
   formatCurrency, 
   convertAmount,
   CurrencyConfig 
-} from '../currencyUtils';
+} from '../currencyUtils.ts';
 
 interface CurrencyModalProps {
   db: Database;
