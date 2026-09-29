@@ -145,7 +145,7 @@ export default function DashboardTab({ db, onNavigateToTab, onSelectAccount, onO
             </div>
 
             <div className="h-[300px] w-full" id="revenue_chart_container">
-              <ResponsiveContainer width="99%" height="100%" minHeight={300} minWidth={100}>
+              <ResponsiveContainer width="100%" height={300}>
                 <AreaChart
                   data={trendData}
                   margin={{ top: 10, right: 10, left: 10, bottom: 0 }}
