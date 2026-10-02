@@ -122,9 +122,7 @@ export default function SyncImportTab({ db, onDatabaseUpdate, role: _role }: Syn
         if (!snap.exists()) {
           addLog("لم يتم العثور على قاعدة بيانات سحابية سابقة. رفع البيانات المحلية الحالية...");
           await setDoc(docRef, {
-            accounts: db.accounts,
-            transactions: db.transactions,
-            dailyEntries: db.dailyEntries,
+            dbState: db.exportState(),
             lastUpdated: new Date().toISOString(),
             updatedBy: "Web Client"
           });
@@ -165,11 +163,14 @@ export default function SyncImportTab({ db, onDatabaseUpdate, role: _role }: Syn
         if (remoteLastUpdated !== localLastUpdated) {
           localStorage.setItem("smartacc_last_cloud_sync_ts", remoteLastUpdated);
           
-          // Replace local collections with latest synchronized cloud records
-          db.accounts = remoteData.accounts || [];
-          db.transactions = remoteData.transactions || [];
-          db.dailyEntries = remoteData.dailyEntries || [];
-          db.save(); // save to client's localstorage in sync
+          if (remoteData.dbState) {
+            db.importState(remoteData.dbState);
+          } else {
+            db.accounts = remoteData.accounts || [];
+            db.transactions = remoteData.transactions || [];
+            db.dailyEntries = remoteData.dailyEntries || [];
+            db.save();
+          }
 
           onDatabaseUpdate();
           setSyncStatus("success");
@@ -203,9 +204,7 @@ export default function SyncImportTab({ db, onDatabaseUpdate, role: _role }: Syn
       const updateTime = new Date().toISOString();
       
       await setDoc(docRef, {
-        accounts: db.accounts,
-        transactions: db.transactions,
-        dailyEntries: db.dailyEntries,
+        dbState: db.exportState(),
         lastUpdated: updateTime,
         updatedBy: "Web Client (Windows/Browser)"
       });
@@ -645,10 +644,11 @@ export default function SyncImportTab({ db, onDatabaseUpdate, role: _role }: Syn
         const updatedEntries = [...(currentData.dailyEntries || []), androidNewEntry];
         const updatedTx = [...(currentData.transactions || []), androidNewTx];
         
+        db.dailyEntries = updatedEntries;
+        db.transactions = updatedTx;
+        db.save();
         await setDoc(docRef, {
-          ...currentData,
-          dailyEntries: updatedEntries,
-          transactions: updatedTx,
+          dbState: db.exportState(),
           lastUpdated: new Date().toISOString(),
           updatedBy: "تطبيق ANAS للاندرويد (Android Client v2.5)"
         });
