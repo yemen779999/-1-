@@ -45,6 +45,26 @@ export const ARABIC_DAYS = [
   'السبت'
 ];
 
+/**
+ * Sanitizes image URL to prevent XSS (e.g. javascript: URLs)
+ */
+export function getSafeImageUrl(url: string | undefined | null): string {
+  if (!url || typeof url !== 'string') return '';
+  const trimmed = url.trim();
+  if (!trimmed) return '';
+
+  if (
+    trimmed.startsWith('https://') ||
+    trimmed.startsWith('http://') ||
+    trimmed.startsWith('data:image/') ||
+    trimmed.startsWith('/') ||
+    trimmed.startsWith('./')
+  ) {
+    return trimmed;
+  }
+  return '';
+}
+
 export function getArabicDayName(dateString: string): string {
   try {
     const date = new Date(dateString);
