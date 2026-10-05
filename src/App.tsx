@@ -5,7 +5,7 @@
 
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import CryptoJS from 'crypto-js';
-import { Database } from './utils.ts';
+import { Database, getSafeImageUrl } from './utils.ts';
 import DashboardTab from './components/DashboardTab.tsx';
 import AccountsTab from './components/AccountsTab.tsx';
 import LedgerTab from './components/LedgerTab.tsx';
@@ -669,11 +669,11 @@ export default function App() {
     <div className="min-h-screen h-screen bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 flex font-sans selection:bg-blue-500/10 transition-colors duration-200 overflow-hidden relative" dir="rtl">
       
       {/* Dynamic Qat Background Wallpaper with Custom Opacity */}
-      {db.appBackgroundImage && (
+      {db.appBackgroundImage && getSafeImageUrl(db.appBackgroundImage) && (
         <div 
           className="fixed inset-0 z-0 pointer-events-none bg-cover bg-center transition-all duration-300 no-print" 
           style={{ 
-            backgroundImage: `url(${db.appBackgroundImage})`,
+            backgroundImage: `url(${getSafeImageUrl(db.appBackgroundImage)})`,
             opacity: (db.appBackgroundOpacity || 5) / 100,
             filter: 'blur(0.5px)'
           }}
@@ -937,8 +937,8 @@ export default function App() {
                       className="p-1 flex items-center justify-center hover:opacity-80 transition-opacity cursor-pointer"
                       title="حسابي والملف الشخصي"
                     >
-                      {authUser.photoURL ? (
-                        <img src={authUser.photoURL} alt="User Profile" className="w-8 h-8 rounded-full object-cover" referrerPolicy="no-referrer" />
+                      {authUser.photoURL && getSafeImageUrl(authUser.photoURL) ? (
+                        <img src={getSafeImageUrl(authUser.photoURL)} alt="User Profile" className="w-8 h-8 rounded-full object-cover" referrerPolicy="no-referrer" />
                       ) : (
                         <UserIcon size={20} className="text-slate-500" />
                       )}
@@ -1027,8 +1027,8 @@ export default function App() {
                   className="flex items-center gap-2 hover:opacity-80 transition-opacity cursor-pointer"
                   title="حسابي والملف الشخصي"
                 >
-                  {authUser.photoURL ? (
-                    <img src={authUser.photoURL} alt="User Profile" className="w-5 h-5 rounded-full object-cover" referrerPolicy="no-referrer" />
+                  {authUser.photoURL && getSafeImageUrl(authUser.photoURL) ? (
+                    <img src={getSafeImageUrl(authUser.photoURL)} alt="User Profile" className="w-5 h-5 rounded-full object-cover" referrerPolicy="no-referrer" />
                   ) : (
                     <UserIcon size={14} className="text-slate-400" />
                   )}
@@ -1561,8 +1561,8 @@ export default function App() {
           <div className="bg-white dark:bg-slate-900 w-full max-w-sm rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 p-6 space-y-6">
             <div className="flex justify-between items-start">
               <div className="flex items-center gap-3">
-                {authUser.photoURL ? (
-                  <img src={authUser.photoURL} alt="User Profile" className="w-12 h-12 rounded-full border border-slate-200 dark:border-slate-700" referrerPolicy="no-referrer" />
+                {authUser.photoURL && getSafeImageUrl(authUser.photoURL) ? (
+                  <img src={getSafeImageUrl(authUser.photoURL)} alt="User Profile" className="w-12 h-12 rounded-full border border-slate-200 dark:border-slate-700" referrerPolicy="no-referrer" />
                 ) : (
                   <div className="w-12 h-12 rounded-full bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 flex items-center justify-center">
                     <UserIcon size={24} />
