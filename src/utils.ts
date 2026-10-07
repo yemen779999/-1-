@@ -5,6 +5,9 @@
 
 import { Account, Transaction, DailyLedgerEntry, GatewayConfig, TriggeredMessage, InvoiceRecord, ActivityLog } from './types.ts';
 import { SUPPORTED_CURRENCIES, DEFAULT_RATES, fetchLiveExchangeRates, convertAmount } from './currencyUtils.ts';
+import { getSafeImageUrl } from './utils/security.ts';
+
+export { getSafeImageUrl };
 
 // Standard LocalStorage keys
 const STORAGE_KEYS = {
