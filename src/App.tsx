@@ -978,6 +978,7 @@ export default function App() {
                activeTab === 'sync-import' ? 'الاستيراد والتحليل الذكي' :
                activeTab === 'recycle' ? 'سلة المحذوفات' :
                activeTab === 'activity-log' ? 'سجل العمليات' :
+               activeTab === 'backup' ? 'النسخ الاحتياطي السحابي' :
                activeTab === 'gateway' ? 'الإعدادات والمظهر' : ''}
             </h1>
           </div>
