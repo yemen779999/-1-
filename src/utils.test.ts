@@ -150,4 +150,33 @@ describe('Database System Tests', () => {
     expect(db.accounts.some(a => a.id === account.id)).toBe(false);
     expect(db.deletedAccounts.some(a => a.id === account.id)).toBe(true);
   });
+
+  it('handles multi-currency conversions and rate updates', () => {
+    // 1 USD to SAR with rate 3.75
+    const sarAmount = db.convertCurrency(100, 'USD', 'SAR');
+    expect(sarAmount).toBe(375);
+
+    // Manual update exchange rate
+    db.updateExchangeRate('EUR', 0.90);
+    expect(db.exchangeRates['EUR']).toBe(0.90);
+  });
+
+  it('exports and imports database state accurately', () => {
+    const originalCount = db.accounts.length;
+    db.addAccount({
+      name: 'حساب جديد للتصدير',
+      openingBalance: 200,
+      type: 'supplier',
+      phone: '',
+      address: '',
+      currency: 'USD'
+    });
+
+    const state = db.exportState();
+    expect(state.accounts.length).toBe(originalCount + 1);
+
+    const db2 = new Database();
+    db2.importState(state);
+    expect(db2.accounts.length).toBe(originalCount + 1);
+  });
 });
