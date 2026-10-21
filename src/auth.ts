@@ -1,7 +1,7 @@
 import { initializeApp, getApps } from 'firebase/app';
 import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, User } from 'firebase/auth';
 import { getFirestore, setLogLevel } from 'firebase/firestore';
-import firebaseConfig from '../firebase-applet-config.json';
+import firebaseConfig from '../firebase-applet-config.json' with { type: 'json' };
 
 // Suppress Firestore SDK network/offline connection warning logs in console
 setLogLevel('error');
@@ -42,11 +42,13 @@ export interface FirestoreErrorInfo {
 
 export function handleFirestoreError(error: unknown, operationType: OperationType, path: string | null) {
   const errMsg = error instanceof Error ? error.message : String(error);
-  const isOffline = !navigator.onLine ||
+  const isOffline = (typeof navigator !== 'undefined' && !navigator.onLine) ||
                     errMsg.toLowerCase().includes('offline') ||
                     errMsg.toLowerCase().includes('network') ||
                     errMsg.toLowerCase().includes('failed to get document') ||
-                    errMsg.toLowerCase().includes('unavailable');
+                    errMsg.toLowerCase().includes('unavailable') ||
+                    errMsg.toLowerCase().includes('permission-denied') ||
+                    errMsg.toLowerCase().includes('unauthenticated');
 
   const errInfo: FirestoreErrorInfo = {
     error: errMsg,
